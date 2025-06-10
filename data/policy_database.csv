@@ -1,0 +1,46 @@
+policy_id,policy_name,policy_type,region,implementation_cost_millions_usd,annual_operating_cost_millions_usd,co2_reduction_mt_per_year,co2_reduction_percent,economic_impact_gdp_percent,employment_impact_jobs,implementation_time_years,success_rate_percent,political_feasibility_score,public_acceptance_score,technology_readiness_level
+P001,Carbon Tax,Economic,North America,50,200,120,3.2,-0.1,15000,1,85,7,6,9
+P002,Renewable Portfolio Standard,Regulatory,North America,800,150,180,4.8,0.2,25000,3,78,8,7,8
+P003,Electric Vehicle Subsidies,Subsidy,North America,1200,300,90,2.4,0.1,18000,2,82,6,8,7
+P004,Energy Efficiency Standards,Regulatory,North America,400,80,150,4.0,0.3,22000,2,88,9,8,9
+P005,Green Building Codes,Regulatory,North America,600,120,80,2.1,0.2,15000,3,75,7,7,8
+P006,Public Transit Investment,Infrastructure,North America,2000,400,60,1.6,0.4,30000,4,72,8,8,8
+P007,Industrial Energy Efficiency,Technical,North America,1500,250,200,5.3,0.5,28000,3,80,8,7,8
+P008,Forest Conservation,Natural,North America,300,50,40,1.1,0.1,5000,2,90,9,9,9
+P009,Solar Panel Installation,Subsidy,North America,1800,200,100,2.7,0.3,20000,3,76,7,8,8
+P010,Wind Farm Development,Infrastructure,North America,2500,300,150,4.0,0.4,25000,4,70,6,7,7
+P011,Carbon Tax,Economic,Europe,40,180,100,2.8,-0.1,12000,1,88,8,7,9
+P012,Renewable Portfolio Standard,Regulatory,Europe,700,130,160,4.5,0.2,22000,3,82,9,8,8
+P013,Electric Vehicle Subsidies,Subsidy,Europe,1000,250,80,2.2,0.1,16000,2,85,7,8,7
+P014,Energy Efficiency Standards,Regulatory,Europe,350,70,130,3.6,0.3,20000,2,90,9,8,9
+P015,Green Building Codes,Regulatory,Europe,500,100,70,1.9,0.2,13000,3,78,8,7,8
+P016,Public Transit Investment,Infrastructure,Europe,1800,350,50,1.4,0.4,28000,4,75,9,8,8
+P017,Industrial Energy Efficiency,Technical,Europe,1300,220,180,5.0,0.5,25000,3,83,8,7,8
+P018,Forest Conservation,Natural,Europe,250,40,35,1.0,0.1,4000,2,92,9,9,9
+P019,Solar Panel Installation,Subsidy,Europe,1600,180,90,2.5,0.3,18000,3,80,8,8,8
+P020,Wind Farm Development,Infrastructure,Europe,2200,260,130,3.6,0.4,22000,4,73,7,7,7
+P021,Carbon Tax,Economic,Asia Pacific,60,220,140,3.5,-0.2,18000,1,75,6,5,9
+P022,Renewable Portfolio Standard,Regulatory,Asia Pacific,900,170,200,5.0,0.2,30000,3,70,7,6,8
+P023,Electric Vehicle Subsidies,Subsidy,Asia Pacific,1400,350,110,2.8,0.1,22000,2,78,5,7,7
+P024,Energy Efficiency Standards,Regulatory,Asia Pacific,450,90,170,4.3,0.3,26000,2,82,8,7,9
+P025,Green Building Codes,Regulatory,Asia Pacific,700,130,90,2.3,0.2,18000,3,68,6,6,8
+P026,Public Transit Investment,Infrastructure,Asia Pacific,2200,450,70,1.8,0.4,35000,4,65,7,7,8
+P027,Industrial Energy Efficiency,Technical,Asia Pacific,1700,280,220,5.5,0.5,32000,3,75,7,6,8
+P028,Forest Conservation,Natural,Asia Pacific,350,60,45,1.1,0.1,6000,2,85,8,8,9
+P029,Solar Panel Installation,Subsidy,Asia Pacific,2000,220,120,3.0,0.3,24000,3,72,6,7,8
+P030,Wind Farm Development,Infrastructure,Asia Pacific,2800,340,170,4.3,0.4,28000,4,68,6,6,7
+P031,Cap and Trade,Economic,North America,100,250,160,4.3,-0.1,20000,2,80,7,6,8
+P032,Feed-in Tariffs,Subsidy,North America,900,180,120,3.2,0.2,18000,2,75,6,7,7
+P033,Smart Grid Implementation,Infrastructure,North America,3000,500,80,2.1,0.3,25000,5,70,8,7,6
+P034,Green Hydrogen Development,Technical,North America,4000,600,100,2.7,0.4,30000,6,65,7,6,5
+P035,Carbon Capture and Storage,Technical,North America,2500,400,150,4.0,0.2,20000,4,60,6,5,6
+P036,Cap and Trade,Economic,Europe,80,220,140,3.9,-0.1,18000,2,85,8,7,8
+P037,Feed-in Tariffs,Subsidy,Europe,800,160,110,3.1,0.2,16000,2,80,7,8,7
+P038,Smart Grid Implementation,Infrastructure,Europe,2700,450,70,1.9,0.3,22000,5,75,9,8,6
+P039,Green Hydrogen Development,Technical,Europe,3600,540,90,2.5,0.4,27000,6,70,8,7,5
+P040,Carbon Capture and Storage,Technical,Europe,2200,350,130,3.6,0.2,18000,4,65,7,6,6
+P041,Cap and Trade,Economic,Asia Pacific,120,280,180,4.5,-0.2,22000,2,70,6,5,8
+P042,Feed-in Tariffs,Subsidy,Asia Pacific,1100,200,140,3.5,0.2,22000,2,72,6,6,7
+P043,Smart Grid Implementation,Infrastructure,Asia Pacific,3300,550,90,2.3,0.3,28000,5,68,7,6,6
+P044,Green Hydrogen Development,Technical,Asia Pacific,4400,660,120,3.0,0.4,33000,6,62,6,5,5
+P045,Carbon Capture and Storage,Technical,Asia Pacific,2800,450,180,4.5,0.2,22000,4,58,5,4,6 

@@ -1,0 +1,46 @@
+policy_id,region,health_benefits_per_capita_usd,air_quality_improvement_percent,premature_deaths_averted,work_days_saved,energy_poverty_reduction_percent,income_equity_impact,public_acceptance_percent,political_support_percent,stakeholder_opposition_percent,implementation_barriers,co_benefits_score
+P001,North America,45,12.5,8500,125000,2.1,0.1,65,58,35,"Industry resistance, Public concern about costs",7.2
+P001,Europe,52,15.2,6200,98000,2.8,0.2,72,68,28,"Industry resistance, Regional coordination",7.8
+P001,Asia Pacific,38,18.8,15200,185000,1.8,-0.1,58,52,42,"Industry resistance, Economic competitiveness",6.5
+P002,North America,38,10.2,6800,95000,3.2,0.3,78,75,22,"Grid integration, Land use conflicts",8.1
+P002,Europe,42,12.8,5200,82000,3.8,0.4,82,79,18,"Grid integration, Aesthetic concerns",8.5
+P002,Asia Pacific,32,15.5,12800,156000,2.8,0.2,68,62,32,"Grid integration, Land acquisition",7.2
+P003,North America,28,8.5,5200,78000,1.5,0.2,82,68,32,"Charging infrastructure, Battery disposal",7.8
+P003,Europe,32,10.2,4200,65000,1.8,0.3,85,72,28,"Charging infrastructure, Grid capacity",8.2
+P003,Asia Pacific,25,12.8,9800,118000,1.2,0.1,72,58,42,"Charging infrastructure, Affordability",6.8
+P004,North America,42,14.2,7500,112000,4.2,0.4,88,85,12,"Upfront costs, Technical expertise",8.8
+P004,Europe,48,16.8,5800,92000,4.8,0.5,92,89,8,"Upfront costs, Building codes",9.1
+P004,Asia Pacific,35,20.5,14200,172000,3.5,0.3,78,72,22,"Upfront costs, Enforcement capacity",7.5
+P005,North America,35,11.8,6200,93000,3.8,0.3,75,68,25,"Construction costs, Design flexibility",7.9
+P005,Europe,40,14.2,4800,76000,4.2,0.4,78,72,22,"Construction costs, Heritage preservation",8.3
+P005,Asia Pacific,28,17.5,11800,142000,3.2,0.2,68,58,32,"Construction costs, Informal settlements",6.9
+P006,North America,52,16.8,9200,138000,5.2,0.6,88,82,18,"Infrastructure costs, Land acquisition",8.9
+P006,Europe,58,19.5,7200,114000,5.8,0.7,92,87,13,"Infrastructure costs, Urban planning",9.3
+P006,Asia Pacific,42,23.2,16800,202000,4.5,0.4,78,68,28,"Infrastructure costs, Informal transport",7.6
+P007,North America,48,13.5,8500,128000,4.8,0.5,82,78,22,"Technology adoption, Workforce training",8.4
+P007,Europe,54,16.2,6600,104000,5.2,0.6,85,81,19,"Technology adoption, International competition",8.8
+P007,Asia Pacific,38,19.8,15800,192000,4.2,0.3,72,65,28,"Technology adoption, Financial constraints",7.1
+P008,North America,25,8.2,4200,63000,1.2,0.1,92,88,8,"Land rights, Economic alternatives",8.2
+P008,Europe,28,9.8,3200,51000,1.5,0.2,95,91,5,"Land rights, Agricultural interests",8.6
+P008,Asia Pacific,22,12.5,7800,95000,0.8,0.0,88,82,12,"Land rights, Development pressure",7.8
+P009,North America,32,9.5,5800,87000,2.8,0.3,76,68,24,"Installation costs, Grid connection",7.6
+P009,Europe,36,11.2,4500,71000,3.2,0.4,80,73,20,"Installation costs, Aesthetic concerns",8.0
+P009,Asia Pacific,28,14.8,11200,135000,2.2,0.2,70,62,30,"Installation costs, Roof access",6.8
+P010,North America,45,12.8,8200,123000,4.5,0.4,68,58,32,"Visual impact, Wildlife concerns",7.4
+P010,Europe,50,15.2,6400,101000,5.0,0.5,72,63,28,"Visual impact, Tourism concerns",7.8
+P010,Asia Pacific,38,18.5,15200,185000,3.8,0.3,62,52,38,"Visual impact, Fishing rights",6.2
+P031,North America,42,11.5,7500,112000,3.5,0.2,70,65,30,"Market complexity, Price volatility",7.5
+P031,Europe,48,13.8,5800,92000,4.0,0.3,75,70,25,"Market complexity, International coordination",7.9
+P031,Asia Pacific,35,17.2,13800,168000,3.0,0.1,62,55,38,"Market complexity, Market development",6.5
+P032,North America,35,10.2,6200,93000,2.5,0.3,72,65,28,"Subsidy costs, Market distortion",7.3
+P032,Europe,40,12.2,4800,76000,2.8,0.4,76,69,24,"Subsidy costs, Technology lock-in",7.7
+P032,Asia Pacific,28,15.5,11800,142000,2.2,0.2,65,58,35,"Subsidy costs, Budget constraints",6.6
+P033,North America,58,18.5,10200,153000,6.2,0.5,82,75,25,"Infrastructure complexity, Cybersecurity",8.6
+P033,Europe,64,21.2,7800,123000,6.8,0.6,85,78,22,"Infrastructure complexity, Privacy concerns",9.0
+P033,Asia Pacific,48,25.8,18200,220000,5.5,0.4,72,63,28,"Infrastructure complexity, Digital divide",7.3
+P034,North America,38,8.8,6800,102000,3.8,0.4,65,58,35,"Technology maturity, Safety concerns",6.8
+P034,Europe,42,10.5,5200,82000,4.2,0.5,68,61,32,"Technology maturity, Infrastructure needs",7.2
+P034,Asia Pacific,32,13.2,12800,156000,3.2,0.3,58,50,42,"Technology maturity, Cost competitiveness",5.9
+P035,North America,45,15.5,8200,123000,4.2,0.3,62,55,38,"Technology costs, Storage capacity",6.5
+P035,Europe,50,18.2,6400,101000,4.8,0.4,65,58,35,"Technology costs, Public acceptance",6.9
+P035,Asia Pacific,38,22.8,15200,185000,3.8,0.2,55,48,45,"Technology costs, Regulatory framework",5.6 

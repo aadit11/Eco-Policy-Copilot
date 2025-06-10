@@ -1,0 +1,64 @@
+technology,year,region,capital_cost_usd_per_kw,operating_cost_usd_per_mwh,capacity_factor,learning_rate,technology_readiness_level,market_penetration_percent,subsidy_required_percent,grid_integration_cost_usd_per_kw,lifetime_years
+Solar PV,2020,North America,1200,15,0.25,0.23,9,3.2,25,200,25
+Solar PV,2020,Europe,1100,12,0.22,0.23,9,4.8,20,180,25
+Solar PV,2020,Asia Pacific,1000,18,0.28,0.23,9,2.1,30,220,25
+Solar PV,2025,North America,800,12,0.26,0.23,9,8.5,15,150,25
+Solar PV,2025,Europe,750,10,0.24,0.23,9,12.3,12,130,25
+Solar PV,2025,Asia Pacific,700,15,0.30,0.23,9,6.8,20,180,25
+Solar PV,2030,North America,600,10,0.28,0.23,9,18.2,8,120,25
+Solar PV,2030,Europe,550,8,0.26,0.23,9,25.6,5,100,25
+Solar PV,2030,Asia Pacific,500,12,0.32,0.23,9,15.4,12,150,25
+Wind Onshore,2020,North America,1400,25,0.35,0.15,9,9.5,15,300,20
+Wind Onshore,2020,Europe,1300,22,0.32,0.15,9,14.8,12,280,20
+Wind Onshore,2020,Asia Pacific,1200,28,0.38,0.15,9,6.2,20,320,20
+Wind Onshore,2025,North America,1200,22,0.37,0.15,9,16.3,10,250,20
+Wind Onshore,2025,Europe,1100,19,0.34,0.15,9,22.5,8,230,20
+Wind Onshore,2025,Asia Pacific,1000,25,0.40,0.15,9,12.8,15,280,20
+Wind Onshore,2030,North America,1000,20,0.39,0.15,9,25.6,5,200,20
+Wind Onshore,2030,Europe,900,17,0.36,0.15,9,32.1,3,180,20
+Wind Onshore,2030,Asia Pacific,800,22,0.42,0.15,9,21.4,10,240,20
+Wind Offshore,2020,North America,3200,45,0.42,0.12,8,0.8,40,800,25
+Wind Offshore,2020,Europe,3000,42,0.40,0.12,8,2.1,35,750,25
+Wind Offshore,2020,Asia Pacific,2800,48,0.45,0.12,8,0.5,45,850,25
+Wind Offshore,2025,North America,2800,40,0.44,0.12,8,2.5,30,650,25
+Wind Offshore,2025,Europe,2600,37,0.42,0.12,8,5.8,25,600,25
+Wind Offshore,2025,Asia Pacific,2400,43,0.47,0.12,8,1.8,35,700,25
+Wind Offshore,2030,North America,2400,35,0.46,0.12,8,6.2,20,500,25
+Wind Offshore,2030,Europe,2200,32,0.44,0.12,8,12.4,15,450,25
+Wind Offshore,2030,Asia Pacific,2000,38,0.49,0.12,8,4.5,25,600,25
+Nuclear,2020,North America,6500,25,0.92,0.05,9,22.1,0,500,40
+Nuclear,2020,Europe,6000,22,0.88,0.05,9,16.7,0,450,40
+Nuclear,2020,Asia Pacific,5500,28,0.90,0.05,9,8.5,10,550,40
+Nuclear,2025,North America,6200,24,0.91,0.05,9,22.6,0,480,40
+Nuclear,2025,Europe,5700,21,0.87,0.05,9,17.2,0,430,40
+Nuclear,2025,Asia Pacific,5200,27,0.89,0.05,9,10.8,8,520,40
+Nuclear,2030,North America,5900,23,0.90,0.05,9,23.1,0,460,40
+Nuclear,2030,Europe,5400,20,0.86,0.05,9,17.7,0,410,40
+Nuclear,2030,Asia Pacific,4900,26,0.88,0.05,9,13.2,5,490,40
+Battery Storage,2020,North America,800,15,0.95,0.18,8,1.2,30,100,15
+Battery Storage,2020,Europe,750,14,0.95,0.18,8,1.8,25,90,15
+Battery Storage,2020,Asia Pacific,700,16,0.95,0.18,8,0.8,35,110,15
+Battery Storage,2025,North America,600,12,0.95,0.18,8,4.5,20,80,15
+Battery Storage,2025,Europe,550,11,0.95,0.18,8,6.2,15,70,15
+Battery Storage,2025,Asia Pacific,500,13,0.95,0.18,8,2.8,25,90,15
+Battery Storage,2030,North America,450,10,0.95,0.18,8,12.8,10,60,15
+Battery Storage,2030,Europe,400,9,0.95,0.18,8,18.5,5,50,15
+Battery Storage,2030,Asia Pacific,350,11,0.95,0.18,8,8.9,15,70,15
+Hydrogen Fuel Cell,2020,North America,2500,45,0.85,0.20,6,0.1,60,400,20
+Hydrogen Fuel Cell,2020,Europe,2300,42,0.85,0.20,6,0.2,55,380,20
+Hydrogen Fuel Cell,2020,Asia Pacific,2100,48,0.85,0.20,6,0.05,65,420,20
+Hydrogen Fuel Cell,2025,North America,2000,38,0.85,0.20,6,1.2,40,300,20
+Hydrogen Fuel Cell,2025,Europe,1800,35,0.85,0.20,6,2.1,35,280,20
+Hydrogen Fuel Cell,2025,Asia Pacific,1600,41,0.85,0.20,6,0.8,50,340,20
+Hydrogen Fuel Cell,2030,North America,1600,32,0.85,0.20,6,4.8,25,240,20
+Hydrogen Fuel Cell,2030,Europe,1400,29,0.85,0.20,6,7.2,20,220,20
+Hydrogen Fuel Cell,2030,Asia Pacific,1200,35,0.85,0.20,6,2.5,35,280,20
+Carbon Capture Storage,2020,North America,3500,60,0.85,0.10,7,0.05,80,600,30
+Carbon Capture Storage,2020,Europe,3200,55,0.85,0.10,7,0.08,75,550,30
+Carbon Capture Storage,2020,Asia Pacific,3000,65,0.85,0.10,7,0.02,85,650,30
+Carbon Capture Storage,2025,North America,3150,54,0.85,0.10,7,0.8,60,480,30
+Carbon Capture Storage,2025,Europe,2880,49,0.85,0.10,7,1.2,55,440,30
+Carbon Capture Storage,2025,Asia Pacific,2700,58,0.85,0.10,7,0.5,70,520,30
+Carbon Capture Storage,2030,North America,2835,48,0.85,0.10,7,2.5,40,384,30
+Carbon Capture Storage,2030,Europe,2592,44,0.85,0.10,7,3.8,35,352,30
+Carbon Capture Storage,2030,Asia Pacific,2430,52,0.85,0.10,7,1.8,55,416,30 

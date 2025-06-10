@@ -1,0 +1,58 @@
+year,region,sector,fuel_type,consumption_twh,share_percent,price_usd_per_mwh,emissions_factor_kg_co2_per_mwh,capacity_mw,capacity_factor,investment_millions_usd
+2020,North America,Electricity,Coal,800,25.2,45.2,820,120000,0.65,2500
+2020,North America,Electricity,Natural Gas,900,28.4,35.8,490,150000,0.55,3200
+2020,North America,Electricity,Nuclear,700,22.1,42.1,12,95000,0.92,1800
+2020,North America,Electricity,Wind,300,9.5,28.5,11,65000,0.35,4500
+2020,North America,Electricity,Solar,200,6.3,32.1,45,45000,0.25,3800
+2020,North America,Electricity,Hydro,150,4.7,25.8,24,25000,0.68,1200
+2020,North America,Electricity,Other Renewables,120,3.8,38.2,15,18000,0.42,900
+2020,North America,Transportation,Gasoline,1200,65.2,85.2,2300,0,0,0
+2020,North America,Transportation,Diesel,400,21.7,78.5,2600,0,0,0
+2020,North America,Transportation,Electric,150,8.1,45.2,120,0,0,2500
+2020,North America,Transportation,Biofuels,90,4.9,92.1,180,0,0,800
+2020,North America,Industry,Natural Gas,800,45.2,28.5,490,0,0,0
+2020,North America,Industry,Coal,400,22.6,42.1,820,0,0,0
+2020,North America,Industry,Electricity,350,19.8,65.2,450,0,0,0
+2020,North America,Industry,Oil,220,12.4,78.9,2600,0,0,0
+2020,Europe,Electricity,Coal,500,18.5,52.1,820,75000,0.62,1800
+2020,Europe,Electricity,Natural Gas,600,22.2,42.8,490,95000,0.58,2800
+2020,Europe,Electricity,Nuclear,450,16.7,48.2,12,65000,0.88,1200
+2020,Europe,Electricity,Wind,400,14.8,32.1,11,85000,0.38,5200
+2020,Europe,Electricity,Solar,300,11.1,28.5,45,65000,0.22,4200
+2020,Europe,Electricity,Hydro,250,9.3,22.8,24,35000,0.72,1100
+2020,Europe,Electricity,Other Renewables,200,7.4,35.2,15,25000,0.45,1100
+2021,North America,Electricity,Coal,750,23.8,48.5,820,115000,0.64,2200
+2021,North America,Electricity,Natural Gas,920,29.2,38.2,490,152000,0.56,3400
+2021,North America,Electricity,Nuclear,700,22.2,43.5,12,95000,0.91,1850
+2021,North America,Electricity,Wind,350,11.1,26.8,11,72000,0.36,5200
+2021,North America,Electricity,Solar,250,7.9,29.8,45,52000,0.26,4200
+2021,North America,Electricity,Hydro,150,4.8,26.2,24,25000,0.67,1200
+2021,North America,Electricity,Other Renewables,130,4.1,36.5,15,20000,0.43,1000
+2022,North America,Electricity,Coal,700,22.4,51.8,820,110000,0.63,2000
+2022,North America,Electricity,Natural Gas,940,30.1,40.6,490,155000,0.57,3600
+2022,North America,Electricity,Nuclear,700,22.4,44.9,12,95000,0.90,1900
+2022,North America,Electricity,Wind,400,12.8,25.1,11,80000,0.37,5900
+2022,North America,Electricity,Solar,300,9.6,27.5,45,60000,0.27,4600
+2022,North America,Electricity,Hydro,150,4.8,26.6,24,25000,0.66,1200
+2022,North America,Electricity,Other Renewables,140,4.5,34.8,15,22000,0.44,1100
+2023,North America,Electricity,Coal,650,21.0,55.1,820,105000,0.62,1800
+2023,North America,Electricity,Natural Gas,960,31.0,42.9,490,158000,0.58,3800
+2023,North America,Electricity,Nuclear,700,22.6,46.3,12,95000,0.89,1950
+2023,North America,Electricity,Wind,450,14.5,23.4,11,88000,0.38,6600
+2023,North America,Electricity,Solar,350,11.3,25.2,45,68000,0.28,5000
+2023,North America,Electricity,Hydro,150,4.8,27.0,24,25000,0.65,1200
+2023,North America,Electricity,Other Renewables,150,4.8,33.1,15,24000,0.45,1200
+2024,North America,Electricity,Coal,600,19.6,58.4,820,100000,0.61,1600
+2024,North America,Electricity,Natural Gas,980,32.0,45.2,490,162000,0.59,4000
+2024,North America,Electricity,Nuclear,700,22.9,47.7,12,95000,0.88,2000
+2024,North America,Electricity,Wind,500,16.3,21.7,11,96000,0.39,7300
+2024,North America,Electricity,Solar,400,13.1,22.9,45,76000,0.29,5400
+2024,North America,Electricity,Hydro,150,4.9,27.4,24,25000,0.64,1200
+2024,North America,Electricity,Other Renewables,160,5.2,31.4,15,26000,0.46,1300
+2025,North America,Electricity,Coal,550,18.2,61.7,820,95000,0.60,1400
+2025,North America,Electricity,Natural Gas,1000,33.0,47.5,490,165000,0.60,4200
+2025,North America,Electricity,Nuclear,700,23.1,49.1,12,95000,0.87,2050
+2025,North America,Electricity,Wind,550,18.2,20.0,11,104000,0.40,8000
+2025,North America,Electricity,Solar,450,14.9,20.6,45,84000,0.30,5800
+2025,North America,Electricity,Hydro,150,5.0,27.8,24,25000,0.63,1200
+2025,North America,Electricity,Other Renewables,170,5.6,29.7,15,28000,0.47,1400 

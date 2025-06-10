@@ -1,0 +1,41 @@
+year,region,sector,co2_emissions_mt,co2_emissions_per_capita,temperature_anomaly_c,precipitation_change_mm,sea_level_rise_mm,renewable_energy_share,population_millions,gdp_billions_usd
+2020,North America,Transportation,1800,5.2,1.1,15.2,85,12.5,370,22000
+2020,North America,Industry,1200,3.5,1.1,15.2,85,8.2,370,22000
+2020,North America,Residential,800,2.3,1.1,15.2,85,15.8,370,22000
+2020,North America,Commercial,600,1.7,1.1,15.2,85,18.4,370,22000
+2020,North America,Electricity,1400,4.0,1.1,15.2,85,22.1,370,22000
+2020,Europe,Transportation,1100,2.1,1.0,12.8,78,18.7,447,19000
+2020,Europe,Industry,900,1.7,1.0,12.8,78,12.3,447,19000
+2020,Europe,Residential,500,0.9,1.0,12.8,78,25.4,447,19000
+2020,Europe,Commercial,400,0.7,1.0,12.8,78,28.9,447,19000
+2020,Europe,Electricity,800,1.5,1.0,12.8,78,35.2,447,19000
+2020,Asia Pacific,Transportation,2500,1.8,1.2,18.5,92,8.9,2300,28000
+2020,Asia Pacific,Industry,2800,2.0,1.2,18.5,92,6.7,2300,28000
+2020,Asia Pacific,Residential,1200,0.9,1.2,18.5,92,12.3,2300,28000
+2020,Asia Pacific,Commercial,800,0.6,1.2,18.5,92,14.8,2300,28000
+2020,Asia Pacific,Electricity,2200,1.6,1.2,18.5,92,18.5,2300,28000
+2021,North America,Transportation,1750,5.0,1.2,16.1,87,14.2,372,22500
+2021,North America,Industry,1180,3.4,1.2,16.1,87,9.1,372,22500
+2021,North America,Residential,780,2.2,1.2,16.1,87,16.8,372,22500
+2021,North America,Commercial,590,1.7,1.2,16.1,87,19.5,372,22500
+2021,North America,Electricity,1350,3.9,1.2,16.1,87,24.3,372,22500
+2022,North America,Transportation,1700,4.8,1.3,17.0,89,16.8,374,23000
+2022,North America,Industry,1150,3.2,1.3,17.0,89,10.5,374,23000
+2022,North America,Residential,760,2.1,1.3,17.0,89,18.2,374,23000
+2022,North America,Commercial,580,1.6,1.3,17.0,89,21.1,374,23000
+2022,North America,Electricity,1300,3.7,1.3,17.0,89,26.8,374,23000
+2023,North America,Transportation,1650,4.6,1.4,17.9,91,19.5,376,23500
+2023,North America,Industry,1120,3.1,1.4,17.9,91,12.1,376,23500
+2023,North America,Residential,740,2.1,1.4,17.9,91,19.8,376,23500
+2023,North America,Commercial,570,1.6,1.4,17.9,91,22.9,376,23500
+2023,North America,Electricity,1250,3.5,1.4,17.9,91,29.4,376,23500
+2024,North America,Transportation,1600,4.4,1.5,18.8,93,22.3,378,24000
+2024,North America,Industry,1090,3.0,1.5,18.8,93,13.8,378,24000
+2024,North America,Residential,720,2.0,1.5,18.8,93,21.5,378,24000
+2024,North America,Commercial,560,1.5,1.5,18.8,93,24.8,378,24000
+2024,North America,Electricity,1200,3.3,1.5,18.8,93,32.1,378,24000
+2025,North America,Transportation,1550,4.2,1.6,19.7,95,25.2,380,24500
+2025,North America,Industry,1060,2.9,1.6,19.7,95,15.6,380,24500
+2025,North America,Residential,700,1.9,1.6,19.7,95,23.3,380,24500
+2025,North America,Commercial,550,1.5,1.6,19.7,95,26.8,380,24500
+2025,North America,Electricity,1150,3.1,1.6,19.7,95,34.9,380,24500 
