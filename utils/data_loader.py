@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Any
 import logging
+from utils.data_preprocessing import DataPreprocessor
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,6 +16,7 @@ class EcoPolicyDataLoader:
         self.data_dir = Path(data_dir)
         self.data_cache = {}
         self.simulation_params = None
+        self.preprocessor = DataPreprocessor()
         
     def load_all_data(self) -> Dict[str, Any]:
         logger.info("Loading all data files...")
@@ -34,6 +36,11 @@ class EcoPolicyDataLoader:
         logger.info("All data loaded successfully")
         return data
     
+    def _preprocess_df(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = self.preprocessor.fill_missing(df)
+        df = self.preprocessor.feature_engineering(df)
+        return df
+    
     def load_climate_data(self) -> pd.DataFrame:
         file_path = self.data_dir / "climate_data.csv"
         try:
@@ -45,6 +52,7 @@ class EcoPolicyDataLoader:
             df['total_emissions'] = df.groupby(['year', 'region'])['co2_emissions_mt'].transform('sum')
             df['emissions_intensity'] = df['co2_emissions_mt'] / df['gdp_billions_usd']
             
+            df = self._preprocess_df(df)
             logger.info(f"Loaded climate data: {len(df)} records")
             return df
         except Exception as e:
@@ -61,6 +69,7 @@ class EcoPolicyDataLoader:
             df['gdp_per_capita'] = df['gdp_billions_usd'] * 1000 / df['population_millions']
             df['gdp_growth_rate'] = df.groupby('region')['gdp_billions_usd'].pct_change()
             
+            df = self._preprocess_df(df)
             logger.info(f"Loaded economic data: {len(df)} records")
             return df
         except Exception as e:
@@ -78,6 +87,7 @@ class EcoPolicyDataLoader:
             df['energy_intensity'] = df['energy_consumption_twh'] / df['gdp_billions_usd']
             df['renewable_share'] = df['renewable_energy_twh'] / df['total_energy_twh']
             
+            df = self._preprocess_df(df)
             logger.info(f"Loaded energy data: {len(df)} records")
             return df
         except Exception as e:
@@ -95,6 +105,7 @@ class EcoPolicyDataLoader:
             df['total_cost'] = df['implementation_cost_millions_usd'] + (df['annual_operating_cost_millions_usd'] * 10)
             df['feasibility_score'] = (df['political_feasibility_score'] + df['public_acceptance_score']) / 2
             
+            df = self._preprocess_df(df)
             logger.info(f"Loaded policy data: {len(df)} records")
             return df
         except Exception as e:
@@ -111,6 +122,7 @@ class EcoPolicyDataLoader:
             df['health_cost_per_capita'] = df['health_costs_millions_usd'] / df['population_millions']
             df['quality_of_life_index'] = (df['life_expectancy'] + df['education_index'] + df['income_index']) / 3
             
+            df = self._preprocess_df(df)
             logger.info(f"Loaded social impact data: {len(df)} records")
             return df
         except Exception as e:
@@ -128,6 +140,7 @@ class EcoPolicyDataLoader:
             df['cost_trend'] = df.groupby(['technology', 'region'])['cost_per_unit'].pct_change()
             df['learning_rate'] = -df.groupby(['technology', 'region'])['cost_per_unit'].pct_change() / df.groupby(['technology', 'region'])['cumulative_capacity'].pct_change()
             
+            df = self._preprocess_df(df)
             logger.info(f"Loaded technology cost data: {len(df)} records")
             return df
         except Exception as e:
