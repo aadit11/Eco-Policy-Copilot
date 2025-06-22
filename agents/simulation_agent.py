@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from agents.data_agent import DataAgent
+from utils.llm_client import LLMClient
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,7 @@ class SimulationAgent:
         self.data_agent = data_agent or DataAgent()
         self.simulation_results = {}
         self.current_scenario = None
+        self.llm_client = LLMClient()
         
     def initialize(self):
         if not self.data_agent.data_cache:
@@ -335,3 +337,59 @@ class SimulationAgent:
         }
         
         return metadata
+    
+    def get_llm_simulation_analysis(self, region: str, simulation_result: Dict) -> Dict[str, str]:
+        if not simulation_result or 'summary' not in simulation_result:
+            return {"error": "No simulation results to analyze"}
+        
+        summary = simulation_result['summary']
+        
+        prompt = f"""
+        Analyze the following climate policy simulation results for {region}:
+        
+        Simulation Summary:
+        - Total emissions: {summary.get('total_emissions_mt', 0):.1f} million tons
+        - Average annual emissions: {summary.get('average_emissions_mt_per_year', 0):.1f} million tons
+        - Total GDP: ${summary.get('total_gdp_billions_usd', 0):.1f} billion
+        - Policy cost: ${summary.get('cumulative_policy_cost', 0):.1f} million
+        - Net policy impact: ${summary.get('net_policy_impact', 0):.1f} million
+        - Total emissions reduction: {summary.get('total_emissions_reduction', 0):.1f} million tons
+        
+        Provide insights on:
+        1. The effectiveness of the simulated policies
+        2. Economic implications
+        3. Recommendations for policy optimization
+        4. Potential risks or concerns
+        """
+        
+        try:
+            response = self.llm_client.generate(prompt)
+            return {"simulation_analysis": response}
+        except Exception as e:
+            logger.error(f"LLM simulation analysis failed: {e}")
+            return {"error": "LLM analysis unavailable"}
+    
+    def get_llm_scenario_comparison(self, scenarios: List[str]) -> Dict[str, str]:
+        comparison_data = self.compare_scenarios(scenarios)
+        
+        if comparison_data.empty:
+            return {"error": "No scenario data to compare"}
+        
+        prompt = f"""
+        Compare the following climate policy scenarios:
+        
+        {comparison_data.to_string()}
+        
+        Provide a comprehensive analysis of:
+        1. Which scenario is most effective for emissions reduction
+        2. Which scenario offers the best economic return
+        3. Trade-offs between different scenarios
+        4. Recommendations for policy implementation
+        """
+        
+        try:
+            response = self.llm_client.generate(prompt)
+            return {"scenario_comparison": response}
+        except Exception as e:
+            logger.error(f"LLM scenario comparison failed: {e}")
+            return {"error": "LLM analysis unavailable"}

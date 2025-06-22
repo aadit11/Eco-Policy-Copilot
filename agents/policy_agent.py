@@ -8,6 +8,7 @@ from pathlib import Path
 
 from agents.data_agent import DataAgent
 from agents.simulation_agent import SimulationAgent
+from utils.llm_client import LLMClient
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ class PolicyGeneratorAgent:
         self.simulation_agent = simulation_agent or SimulationAgent(data_agent)
         self.policy_recommendations = {}
         self.policy_history = []
+        self.llm_client = LLMClient()
         
     def initialize(self):
         if not self.data_agent.data_cache:
@@ -410,3 +412,75 @@ class PolicyGeneratorAgent:
         }
         
         return metadata
+
+    def get_llm_policy_recommendations(self, region: str, target_emission_reduction: float) -> Dict[str, str]:
+        baseline_data = self.data_agent.get_climate_data(region)
+        economic_data = self.data_agent.get_economic_data(region)
+        energy_data = self.data_agent.get_energy_data(region)
+        
+        if baseline_data.empty or economic_data.empty:
+            return {"error": "No data available for policy analysis"}
+        
+        current_emissions = baseline_data.groupby('year')['co2_emissions_mt'].sum().iloc[-1]
+        current_gdp = economic_data.groupby('region')['gdp_billions_usd'].last().iloc[0]
+        renewable_share = energy_data['renewable_share'].iloc[-1] if not energy_data.empty else 0
+        
+        prompt = f"""
+        Generate climate policy recommendations for {region} to achieve {target_emission_reduction}% emission reduction:
+        
+        Current Situation:
+        - Emissions: {current_emissions:.1f} million tons CO2/year
+        - GDP: ${current_gdp:.1f} billion
+        - Renewable energy share: {renewable_share:.1%}
+        
+        Requirements:
+        - Target emission reduction: {target_emission_reduction}%
+        - Consider economic feasibility
+        - Prioritize cost-effective measures
+        - Include implementation timeline
+        
+        Provide 5 specific policy recommendations with:
+        1. Policy type and description
+        2. Expected emission reduction
+        3. Estimated cost
+        4. Implementation timeline
+        5. Expected benefits
+        """
+        
+        try:
+            response = self.llm_client.generate(prompt)
+            return {"llm_policy_recommendations": response}
+        except Exception as e:
+            logger.error(f"LLM policy generation failed: {e}")
+            return {"error": "LLM analysis unavailable"}
+    
+    def get_llm_policy_optimization(self, region: str, current_policies: List[Dict]) -> Dict[str, str]:
+        if not current_policies:
+            return {"error": "No policies to optimize"}
+        
+        policy_summary = []
+        for i, policy in enumerate(current_policies[:3]):  # Top 3 policies
+            policy_summary.append(f"Policy {i+1}: {policy.get('name', 'Unknown')} - "
+                                f"Emission reduction: {policy.get('emission_reduction_percent', 0):.1f}%, "
+                                f"Cost: ${policy.get('total_cost_millions_usd', 0):.1f}M")
+        
+        prompt = f"""
+        Optimize the following climate policies for {region}:
+        
+        Current Policies:
+        {chr(10).join(policy_summary)}
+        
+        Provide optimization recommendations for:
+        1. Policy parameter adjustments (tax rates, subsidy levels, etc.)
+        2. Implementation sequencing
+        3. Complementary policies to enhance effectiveness
+        4. Risk mitigation strategies
+        5. Cost optimization opportunities
+        """
+        
+        try:
+            response = self.llm_client.generate(prompt)
+            return {"policy_optimization": response}
+        except Exception as e:
+            logger.error(f"LLM policy optimization failed: {e}")
+            return {"error": "LLM analysis unavailable"}

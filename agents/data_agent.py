@@ -8,6 +8,7 @@ from pathlib import Path
 import json
 
 from utils.data_loader import EcoPolicyDataLoader
+from utils.llm_client import LLMClient
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ class DataAgent:
         self.data_cache = {}
         self.last_update = None
         self.update_interval = timedelta(hours=6)
+        self.llm_client = LLMClient()
         
     def initialize(self) -> Dict[str, Any]:
         logger.info("Initializing Data Agent...")
@@ -238,3 +240,63 @@ class DataAgent:
         }
         
         return summary
+    
+    def get_llm_data_insights(self, region: str) -> Dict[str, str]:
+        climate_data = self.get_climate_data(region)
+        economic_data = self.get_economic_data(region)
+        energy_data = self.get_energy_data(region)
+        
+        if climate_data.empty or economic_data.empty:
+            return {"error": "No data available for analysis"}
+        
+        prompt = f"""
+        Analyze the following climate and economic data for {region}:
+        
+        Climate Data Summary:
+        - Current emissions: {climate_data['co2_emissions_mt'].iloc[-1]:.1f} million tons
+        - Emissions trend: {self.get_emissions_trend(region).get('trend_direction', 'unknown')}
+        
+        Economic Data Summary:
+        - GDP: ${economic_data['gdp_billions_usd'].iloc[-1]:.1f} billion
+        - GDP per capita: ${economic_data['gdp_per_capita'].iloc[-1]:.0f}
+        
+        Energy Data Summary:
+        - Renewable share: {energy_data['renewable_share'].iloc[-1]:.1%}
+        
+        Provide 3 key insights about this region's climate and economic situation, and suggest 2 priority areas for climate policy intervention.
+        """
+        
+        try:
+            response = self.llm_client.generate(prompt)
+            return {"llm_insights": response}
+        except Exception as e:
+            logger.error(f"LLM analysis failed: {e}")
+            return {"error": "LLM analysis unavailable"}
+    
+    def get_llm_trend_analysis(self, region: str, metric: str = "emissions") -> Dict[str, str]:
+        if metric == "emissions":
+            data = self.get_climate_data(region)
+            current_value = data['co2_emissions_mt'].iloc[-1]
+            trend = self.get_emissions_trend(region)
+        elif metric == "gdp":
+            data = self.get_economic_data(region)
+            current_value = data['gdp_billions_usd'].iloc[-1]
+            trend = {"trend_direction": "increasing", "emissions_change_percent": 2.5}
+        else:
+            return {"error": "Unsupported metric"}
+        
+        prompt = f"""
+        Analyze the {metric} trend for {region}:
+        - Current value: {current_value:.1f}
+        - Trend direction: {trend.get('trend_direction', 'unknown')}
+        - Change over time: {trend.get('emissions_change_percent', 0):.1f}%
+        
+        Provide a brief analysis of what this trend means for climate policy and what actions should be prioritized.
+        """
+        
+        try:
+            response = self.llm_client.generate(prompt)
+            return {"trend_analysis": response}
+        except Exception as e:
+            logger.error(f"LLM trend analysis failed: {e}")
+            return {"error": "LLM analysis unavailable"}
