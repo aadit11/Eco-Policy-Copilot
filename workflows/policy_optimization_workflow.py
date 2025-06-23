@@ -1,4 +1,5 @@
-from langgraph.graph import StateGraph, END, State
+from langgraph.graph import StateGraph, END
+from langgraph.graph.message import State
 from agents.data_agent import DataAgent
 from agents.simulation_agent import SimulationAgent
 from agents.policy_agent import PolicyGeneratorAgent
