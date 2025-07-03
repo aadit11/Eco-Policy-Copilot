@@ -40,8 +40,8 @@ class CommunicationsAgent:
         baseline_data = self.data_agent.get_climate_data(region)
         economic_data = self.data_agent.get_economic_data(region)
         
-        current_emissions = baseline_data.groupby('year')['co2_emissions_mt'].sum().iloc[-1]
-        current_gdp = economic_data.groupby('region')['gdp_billions_usd'].last().iloc[0]
+        current_emissions = baseline_data.groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1] if not baseline_data.empty else 0
+        current_gdp = economic_data.groupby('region', observed=False)['gdp_billions_usd'].last().iloc[0] if not economic_data.empty else 0
         
         best_policy = policy_recommendations[0]
         
@@ -458,8 +458,8 @@ class CommunicationsAgent:
         baseline_data = self.data_agent.get_climate_data(region)
         economic_data = self.data_agent.get_economic_data(region)
         
-        current_emissions = baseline_data.groupby('year')['co2_emissions_mt'].sum().iloc[-1]
-        current_gdp = economic_data.groupby('region')['gdp_billions_usd'].last().iloc[0]
+        current_emissions = baseline_data.groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1] if not baseline_data.empty else 0
+        current_gdp = economic_data.groupby('region', observed=False)['gdp_billions_usd'].last().iloc[0] if not economic_data.empty else 0
         
         prompt = f"""
         Create an executive summary for climate policy recommendations in {region}:
@@ -485,10 +485,10 @@ class CommunicationsAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"llm_executive_summary": response}
+            return response
         except Exception as e:
             logger.error(f"LLM executive summary generation failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"
     
     def generate_llm_policy_brief(self, region: str, policy_recommendations: List[Dict] = None) -> Dict[str, str]:
         if not policy_recommendations:
@@ -528,7 +528,7 @@ class CommunicationsAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"llm_policy_brief": response}
+            return response
         except Exception as e:
             logger.error(f"LLM policy brief generation failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"

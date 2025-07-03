@@ -49,7 +49,7 @@ class EcoPolicyDataLoader:
             df['region'] = df['region'].astype('category')
             df['sector'] = df['sector'].astype('category')
             
-            df['total_emissions'] = df.groupby(['year', 'region'])['co2_emissions_mt'].transform('sum')
+            df['total_emissions'] = df.groupby(['year', 'region'], observed=False)['co2_emissions_mt'].transform('sum')
             df['emissions_intensity'] = df['co2_emissions_mt'] / df['gdp_billions_usd']
             
             df = self._preprocess_df(df)
@@ -67,7 +67,7 @@ class EcoPolicyDataLoader:
             df['region'] = df['region'].astype('category')
             
             df['gdp_per_capita'] = df['gdp_billions_usd'] * 1000 / df['population_millions']
-            df['gdp_growth_rate'] = df.groupby('region')['gdp_billions_usd'].pct_change()
+            df['gdp_growth_rate'] = df.groupby('region', observed=False)['gdp_billions_usd'].pct_change(fill_method=None)
             
             df = self._preprocess_df(df)
             logger.info(f"Loaded economic data: {len(df)} records")
@@ -137,8 +137,8 @@ class EcoPolicyDataLoader:
             df['technology'] = df['technology'].astype('category')
             df['region'] = df['region'].astype('category')
             
-            df['cost_trend'] = df.groupby(['technology', 'region'])['cost_per_unit'].pct_change()
-            df['learning_rate'] = -df.groupby(['technology', 'region'])['cost_per_unit'].pct_change() / df.groupby(['technology', 'region'])['cumulative_capacity'].pct_change()
+            df['cost_trend'] = df.groupby(['technology', 'region'], observed=False)['cost_per_unit'].pct_change(fill_method=None)
+            df['learning_rate'] = -df.groupby(['technology', 'region'], observed=False)['cost_per_unit'].pct_change(fill_method=None) / df.groupby(['technology', 'region'], observed=False)['cumulative_capacity'].pct_change(fill_method=None)
             
             df = self._preprocess_df(df)
             logger.info(f"Loaded technology cost data: {len(df)} records")
@@ -171,7 +171,7 @@ class EcoPolicyDataLoader:
             climate_df = climate_df[climate_df['region'] == region]
             economic_df = economic_df[economic_df['region'] == region]
         
-        summary = climate_df.groupby(['region', 'year']).agg({
+        summary = climate_df.groupby(['region', 'year'], observed=False).agg({
             'co2_emissions_mt': 'sum',
             'temperature_anomaly_c': 'mean',
             'renewable_energy_share': 'mean',

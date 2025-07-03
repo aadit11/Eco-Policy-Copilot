@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 from config.settings import SETTINGS
 from workflows.policy_optimization_workflow import build_policy_optimization_graph
+from agents.communications_agent import CommunicationsAgent
 
 def get_available_regions(data_path):
     climate_file = Path(data_path) / "climate_data.csv"
@@ -77,6 +78,16 @@ def main():
         with open(out_file, 'w') as f:
             json.dump(final_state.final_output, f, indent=2, default=str)
         print(f"\nPolicy brief saved to {out_file}")
+
+        comms_agent = CommunicationsAgent()
+        summary = comms_agent.generate_executive_summary(region, policy_recommendations=final_state.final_output.get('policies'))
+        print("\n=== Executive Summary ===")
+        print(summary)
+        # Save executive summary to file as plain text
+        summary_file = Path(output_dir) / f"executive_summary_{region.replace(' ', '_').lower()}.txt"
+        with open(summary_file, 'w', encoding='utf-8') as f:
+            f.write(summary)
+        print(f"\nExecutive summary saved to {summary_file}")
     else:
         print("No final output generated.")
 

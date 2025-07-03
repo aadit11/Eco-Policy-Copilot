@@ -37,7 +37,7 @@ class PolicyGeneratorAgent:
         if baseline_data.empty or policy_data.empty:
             return []
         
-        current_emissions = baseline_data.groupby('year')['co2_emissions_mt'].sum().iloc[-1]
+        current_emissions = baseline_data.groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1] if not baseline_data.empty else 0
         target_emissions = current_emissions * (1 - target_emission_reduction / 100)
         
         policy_candidates = self._generate_policy_candidates(region, policy_data, economic_data)
@@ -79,8 +79,8 @@ class PolicyGeneratorAgent:
     def _generate_policy_candidates(self, region: str, policy_data: pd.DataFrame, economic_data: pd.DataFrame) -> List[Dict]:
         candidates = []
         
-        current_gdp = economic_data.groupby('region')['gdp_billions_usd'].last().iloc[0]
-        current_emissions = self.data_agent.get_climate_data(region).groupby('year')['co2_emissions_mt'].sum().iloc[-1]
+        current_gdp = economic_data.groupby('region', observed=False)['gdp_billions_usd'].last().iloc[0] if not economic_data.empty else 0
+        current_emissions = self.data_agent.get_climate_data(region).groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1] if not self.data_agent.get_climate_data(region).empty else 0
         
         carbon_tax_candidates = [
             {
@@ -285,7 +285,7 @@ class PolicyGeneratorAgent:
                 result = self.simulation_agent.run_policy_simulation(region, [test_policy])
                 if result:
                     summary = result['summary']
-                    current_emissions = self.data_agent.get_climate_data(region).groupby('year')['co2_emissions_mt'].sum().iloc[-1]
+                    current_emissions = self.data_agent.get_climate_data(region).groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1] if not self.data_agent.get_climate_data(region).empty else 0
                     emission_reduction = ((current_emissions - summary['final_year_emissions']) / current_emissions) * 100
                     
                     if emission_reduction >= target_emission_reduction:
@@ -303,7 +303,7 @@ class PolicyGeneratorAgent:
                 result = self.simulation_agent.run_policy_simulation(region, [test_policy])
                 if result:
                     summary = result['summary']
-                    current_emissions = self.data_agent.get_climate_data(region).groupby('year')['co2_emissions_mt'].sum().iloc[-1]
+                    current_emissions = self.data_agent.get_climate_data(region).groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1] if not self.data_agent.get_climate_data(region).empty else 0
                     emission_reduction = ((current_emissions - summary['final_year_emissions']) / current_emissions) * 100
                     
                     if emission_reduction >= target_emission_reduction:
@@ -340,8 +340,8 @@ class PolicyGeneratorAgent:
         if policy_data.empty:
             return ['No policy data available for gap analysis']
         
-        sector_emissions = climate_data.groupby('sector')['co2_emissions_mt'].sum()
-        policy_coverage = policy_data.groupby('policy_type').size()
+        sector_emissions = climate_data.groupby('sector', observed=False)['co2_emissions_mt'].sum() if not climate_data.empty else pd.Series()
+        policy_coverage = policy_data.groupby('policy_type', observed=False).size() if not policy_data.empty else pd.Series()
         
         if 'transportation' in sector_emissions.index and sector_emissions['transportation'] > 0:
             if 'transportation' not in policy_coverage.index:
@@ -413,16 +413,24 @@ class PolicyGeneratorAgent:
         
         return metadata
 
-    def get_llm_policy_recommendations(self, region: str, target_emission_reduction: float) -> Dict[str, str]:
+    def get_llm_policy_recommendations(self, region: str, target_emission_reduction: float) -> str:
         baseline_data = self.data_agent.get_climate_data(region)
         economic_data = self.data_agent.get_economic_data(region)
         energy_data = self.data_agent.get_energy_data(region)
         
         if baseline_data.empty or economic_data.empty:
-            return {"error": "No data available for policy analysis"}
+            return "No data available for policy analysis"
         
-        current_emissions = baseline_data.groupby('year')['co2_emissions_mt'].sum().iloc[-1]
-        current_gdp = economic_data.groupby('region')['gdp_billions_usd'].last().iloc[0]
+        try:
+            current_emissions = baseline_data.groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1]
+        except Exception as e:
+            logger.error(f"Error accessing current_emissions: {e}")
+            current_emissions = 0
+        try:
+            current_gdp = economic_data.groupby('region', observed=False)['gdp_billions_usd'].last().iloc[0]
+        except Exception as e:
+            logger.error(f"Error accessing current_gdp: {e}")
+            current_gdp = 0
         renewable_share = energy_data['renewable_share'].iloc[-1] if not energy_data.empty else 0
         
         prompt = f"""
@@ -449,14 +457,14 @@ class PolicyGeneratorAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"llm_policy_recommendations": response}
+            return response
         except Exception as e:
             logger.error(f"LLM policy generation failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"
     
-    def get_llm_policy_optimization(self, region: str, current_policies: List[Dict]) -> Dict[str, str]:
+    def get_llm_policy_optimization(self, region: str, current_policies: List[Dict]) -> str:
         if not current_policies:
-            return {"error": "No policies to optimize"}
+            return "No policies to optimize"
         
         policy_summary = []
         for i, policy in enumerate(current_policies[:3]):  # Top 3 policies
@@ -480,7 +488,7 @@ class PolicyGeneratorAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"policy_optimization": response}
+            return response
         except Exception as e:
             logger.error(f"LLM policy optimization failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"

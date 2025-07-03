@@ -36,9 +36,9 @@ class SimulationAgent:
         if baseline_data.empty or economic_data.empty:
             return {}
         
-        latest_emissions = baseline_data.groupby('year')['co2_emissions_mt'].sum().iloc[-1]
-        latest_gdp = economic_data.groupby('region')['gdp_billions_usd'].last().iloc[0]
-        latest_population = economic_data.groupby('region')['population_millions'].last().iloc[0]
+        latest_emissions = baseline_data.groupby('year', observed=False)['co2_emissions_mt'].sum().iloc[-1] if not baseline_data.empty else 0
+        latest_gdp = economic_data.groupby('region', observed=False)['gdp_billions_usd'].last().iloc[0] if not economic_data.empty else 0
+        latest_population = economic_data.groupby('region', observed=False)['population_millions'].last().iloc[0] if not economic_data.empty else 0
         
         simulation_results = []
         
@@ -257,7 +257,7 @@ class SimulationAgent:
             'average_emissions_mt_per_year': df['emissions_mt'].mean(),
             'emissions_trend': 'decreasing' if df['emissions_mt'].iloc[-1] < df['emissions_mt'].iloc[0] else 'increasing',
             'total_gdp_billions_usd': df['gdp_billions_usd'].sum(),
-            'average_gdp_growth': df['gdp_billions_usd'].pct_change().mean() * 100,
+            'average_gdp_growth': df['gdp_billions_usd'].pct_change(fill_method=None).mean() * 100,
             'cumulative_policy_cost': df.get('policy_cost_millions_usd', pd.Series([0] * len(df))).sum(),
             'cumulative_policy_benefits': df.get('policy_benefits_millions_usd', pd.Series([0] * len(df))).sum(),
             'net_policy_impact': df.get('net_policy_impact_millions_usd', pd.Series([0] * len(df))).sum(),
@@ -338,9 +338,9 @@ class SimulationAgent:
         
         return metadata
     
-    def get_llm_simulation_analysis(self, region: str, simulation_result: Dict) -> Dict[str, str]:
+    def get_llm_simulation_analysis(self, region: str, simulation_result: Dict) -> str:
         if not simulation_result or 'summary' not in simulation_result:
-            return {"error": "No simulation results to analyze"}
+            return "LLM analysis unavailable"
         
         summary = simulation_result['summary']
         
@@ -364,16 +364,16 @@ class SimulationAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"simulation_analysis": response}
+            return response
         except Exception as e:
             logger.error(f"LLM simulation analysis failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"
     
-    def get_llm_scenario_comparison(self, scenarios: List[str]) -> Dict[str, str]:
+    def get_llm_scenario_comparison(self, scenarios: List[str]) -> str:
         comparison_data = self.compare_scenarios(scenarios)
         
         if comparison_data.empty:
-            return {"error": "No scenario data to compare"}
+            return "LLM analysis unavailable"
         
         prompt = f"""
         Compare the following climate policy scenarios:
@@ -389,7 +389,7 @@ class SimulationAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"scenario_comparison": response}
+            return response
         except Exception as e:
             logger.error(f"LLM scenario comparison failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"

@@ -92,7 +92,9 @@ class DataAgent:
         if climate_df.empty:
             return {}
         
-        recent_data = climate_df.groupby('year')['co2_emissions_mt'].sum().tail(years)
+        recent_data = climate_df.groupby('year', observed=False)['co2_emissions_mt'].sum().tail(years)
+        if recent_data.empty:
+            return {}
         
         trend_analysis = {
             'current_emissions': recent_data.iloc[-1],
@@ -133,7 +135,9 @@ class DataAgent:
         if economic_df.empty:
             return {}
         
-        latest_data = economic_df.groupby('region').last()
+        latest_data = economic_df.groupby('region', observed=False).last()
+        if latest_data.empty:
+            return {}
         
         indicators = {
             'gdp_billions_usd': latest_data['gdp_billions_usd'].iloc[0],
@@ -151,7 +155,7 @@ class DataAgent:
         if policy_df.empty:
             return pd.DataFrame()
         
-        effectiveness_metrics = policy_df.groupby('policy_type').agg({
+        effectiveness_metrics = policy_df.groupby('policy_type', observed=False).agg({
             'co2_reduction_mt_per_year': 'mean',
             'cost_effectiveness': 'mean',
             'feasibility_score': 'mean',
@@ -168,7 +172,9 @@ class DataAgent:
             if metric == 'co2_emissions_mt':
                 data = self.get_climate_data(region)
                 if not data.empty:
-                    latest = data.groupby('year')[metric].sum().tail(1)
+                    latest = data.groupby('year', observed=False)[metric].sum().tail(1)
+                    if latest.empty:
+                        continue
                     comparison_data.append({
                         'region': region,
                         'value': latest.iloc[0],
@@ -177,7 +183,9 @@ class DataAgent:
             elif metric in ['gdp_billions_usd', 'gdp_per_capita', 'population_millions']:
                 data = self.get_economic_data(region)
                 if not data.empty:
-                    latest = data.groupby('region')[metric].last()
+                    latest = data.groupby('region', observed=False)[metric].last()
+                    if latest.empty:
+                        continue
                     comparison_data.append({
                         'region': region,
                         'value': latest.iloc[0],
@@ -241,13 +249,13 @@ class DataAgent:
         
         return summary
     
-    def get_llm_data_insights(self, region: str) -> Dict[str, str]:
+    def get_llm_data_insights(self, region: str) -> str:
         climate_data = self.get_climate_data(region)
         economic_data = self.get_economic_data(region)
         energy_data = self.get_energy_data(region)
         
         if climate_data.empty or economic_data.empty:
-            return {"error": "No data available for analysis"}
+            return "No data available for analysis"
         
         prompt = f"""
         Analyze the following climate and economic data for {region}:
@@ -268,12 +276,12 @@ class DataAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"llm_insights": response}
+            return response
         except Exception as e:
             logger.error(f"LLM analysis failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"
     
-    def get_llm_trend_analysis(self, region: str, metric: str = "emissions") -> Dict[str, str]:
+    def get_llm_trend_analysis(self, region: str, metric: str = "emissions") -> str:
         if metric == "emissions":
             data = self.get_climate_data(region)
             current_value = data['co2_emissions_mt'].iloc[-1]
@@ -283,7 +291,7 @@ class DataAgent:
             current_value = data['gdp_billions_usd'].iloc[-1]
             trend = {"trend_direction": "increasing", "emissions_change_percent": 2.5}
         else:
-            return {"error": "Unsupported metric"}
+            return "Unsupported metric"
         
         prompt = f"""
         Analyze the {metric} trend for {region}:
@@ -296,7 +304,10 @@ class DataAgent:
         
         try:
             response = self.llm_client.generate(prompt)
-            return {"trend_analysis": response}
+            return response
         except Exception as e:
             logger.error(f"LLM trend analysis failed: {e}")
-            return {"error": "LLM analysis unavailable"}
+            return "LLM analysis unavailable"
+    
+    def get_regional_summary(self, region: str = None) -> pd.DataFrame:
+        return self.data_loader.get_regional_summary(region)
