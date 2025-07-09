@@ -13,16 +13,22 @@ logger = logging.getLogger(__name__)
 
 class SimulationAgent:
     def __init__(self, data_agent: DataAgent = None):
+        """Initialize the SimulationAgent with an optional DataAgent instance."""
         self.data_agent = data_agent or DataAgent()
         self.simulation_results = {}
         self.current_scenario = None
         self.llm_client = LLMClient()
         
     def initialize(self):
+        """Initialize the DataAgent if its data cache is empty."""
         if not self.data_agent.data_cache:
             self.data_agent.initialize()
     
     def run_baseline_simulation(self, region: str, years: int = 20) -> Dict[str, Any]:
+        """
+        Run a baseline simulation for a given region over a specified number of years.
+        Returns a dictionary containing the simulation data and summary statistics.
+        """
         self.initialize()
         
         logger.info(f"Running baseline simulation for {region} over {years} years")
@@ -84,6 +90,10 @@ class SimulationAgent:
         return self.simulation_results['baseline']
     
     def run_policy_simulation(self, region: str, policies: List[Dict], years: int = 20) -> Dict[str, Any]:
+        """
+        Run a policy simulation for a given region and list of policies over a specified number of years.
+        Returns a dictionary containing the simulation data, summary statistics, and policy effects.
+        """
         self.initialize()
         
         logger.info(f"Running policy simulation for {region} with {len(policies)} policies")
@@ -139,6 +149,10 @@ class SimulationAgent:
         return policy_result
     
     def _calculate_policy_effects(self, policies: List[Dict], baseline_df: pd.DataFrame) -> Dict[str, Dict]:
+        """
+        Calculate the effects of each policy in the list on the baseline data.
+        Returns a dictionary mapping policy names to their calculated effects.
+        """
         policy_effects = {}
         
         for policy in policies:
@@ -160,6 +174,10 @@ class SimulationAgent:
         return policy_effects
     
     def _calculate_carbon_tax_effect(self, policy: Dict, baseline_df: pd.DataFrame) -> Dict:
+        """
+        Calculate the effect of a carbon tax policy on emissions, cost, and benefits.
+        Returns a dictionary with annual emission reduction, cost, benefits, and implementation details.
+        """
         tax_rate = policy.get('tax_rate_usd_per_ton', 50)
         implementation_delay = policy.get('implementation_delay_years', 1)
         
@@ -179,6 +197,10 @@ class SimulationAgent:
         }
     
     def _calculate_renewable_subsidy_effect(self, policy: Dict, baseline_df: pd.DataFrame) -> Dict:
+        """
+        Calculate the effect of a renewable energy subsidy policy on emissions, cost, and benefits.
+        Returns a dictionary with annual emission reduction, cost, benefits, and implementation details.
+        """
         subsidy_rate = policy.get('subsidy_rate_percent', 30)
         implementation_delay = policy.get('implementation_delay_years', 1)
         
@@ -198,6 +220,10 @@ class SimulationAgent:
         }
     
     def _calculate_energy_efficiency_effect(self, policy: Dict, baseline_df: pd.DataFrame) -> Dict:
+        """
+        Calculate the effect of an energy efficiency policy on emissions, cost, and benefits.
+        Returns a dictionary with annual emission reduction, cost, benefits, and implementation details.
+        """
         efficiency_improvement = policy.get('efficiency_improvement_percent', 15)
         implementation_delay = policy.get('implementation_delay_years', 2)
         
@@ -216,6 +242,10 @@ class SimulationAgent:
         }
     
     def _calculate_ev_subsidy_effect(self, policy: Dict, baseline_df: pd.DataFrame) -> Dict:
+        """
+        Calculate the effect of an electric vehicle (EV) subsidy policy on emissions, cost, and benefits.
+        Returns a dictionary with annual emission reduction, cost, benefits, and implementation details.
+        """
         ev_penetration_target = policy.get('ev_penetration_target_percent', 20)
         implementation_delay = policy.get('implementation_delay_years', 1)
         
@@ -235,6 +265,10 @@ class SimulationAgent:
         }
     
     def _calculate_generic_policy_effect(self, policy: Dict, baseline_df: pd.DataFrame) -> Dict:
+        """
+        Calculate the effect of a generic policy using provided parameters.
+        Returns a dictionary with annual emission reduction, cost, benefits, and implementation details.
+        """
         emission_reduction = policy.get('emission_reduction_mt_per_year', 1)
         cost = policy.get('annual_cost_millions_usd', 10)
         benefits = policy.get('annual_benefits_millions_usd', 20)
@@ -249,6 +283,10 @@ class SimulationAgent:
         }
     
     def _calculate_simulation_summary(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """
+        Calculate summary statistics for a simulation DataFrame.
+        Returns a dictionary with total emissions, GDP, policy costs, and other key metrics.
+        """
         if df.empty:
             return {}
         
@@ -269,6 +307,10 @@ class SimulationAgent:
         return summary
     
     def compare_scenarios(self, scenarios: List[str]) -> pd.DataFrame:
+        """
+        Compare multiple simulation scenarios by their summary statistics.
+        Returns a DataFrame with key metrics for each scenario.
+        """
         comparison_data = []
         
         for scenario in scenarios:
@@ -291,6 +333,10 @@ class SimulationAgent:
         return pd.DataFrame(comparison_data)
     
     def get_sensitivity_analysis(self, region: str, policy: Dict, parameter: str, range_values: List[float]) -> pd.DataFrame:
+        """
+        Perform a sensitivity analysis by varying a policy parameter over a range of values.
+        Returns a DataFrame with results for each parameter value.
+        """
         sensitivity_results = []
         
         for value in range_values:
@@ -311,6 +357,9 @@ class SimulationAgent:
         return pd.DataFrame(sensitivity_results)
     
     def export_simulation_results(self, output_dir: str = "simulation_results"):
+        """
+        Export all simulation results and summaries to CSV and JSON files in the specified output directory.
+        """
         output_path = Path(output_dir)
         output_path.mkdir(exist_ok=True)
         
@@ -328,6 +377,10 @@ class SimulationAgent:
         logger.info(f"Simulation results exported to {output_path}")
     
     def get_simulation_metadata(self) -> Dict[str, Any]:
+        """
+        Retrieve metadata about the current simulation results, including scenario count, regions, and data points.
+        Returns a dictionary with metadata information.
+        """
         metadata = {
             'total_scenarios': len(self.simulation_results),
             'scenarios': list(self.simulation_results.keys()),
@@ -339,6 +392,10 @@ class SimulationAgent:
         return metadata
     
     def get_llm_simulation_analysis(self, region: str, simulation_result: Dict) -> str:
+        """
+        Use an LLM to analyze the results of a climate policy simulation for a given region.
+        Returns a string containing the LLM's analysis or an error message if unavailable.
+        """
         if not simulation_result or 'summary' not in simulation_result:
             return "LLM analysis unavailable"
         
@@ -370,6 +427,10 @@ class SimulationAgent:
             return "LLM analysis unavailable"
     
     def get_llm_scenario_comparison(self, scenarios: List[str]) -> str:
+        """
+        Use an LLM to compare multiple climate policy scenarios and provide a comprehensive analysis.
+        Returns a string containing the LLM's comparison or an error message if unavailable.
+        """
         comparison_data = self.compare_scenarios(scenarios)
         
         if comparison_data.empty:

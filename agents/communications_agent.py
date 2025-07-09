@@ -14,8 +14,19 @@ from utils.llm_client import LLMClient
 logger = logging.getLogger(__name__)
 
 class CommunicationsAgent:
+    """
+    Agent responsible for generating, summarizing, and exporting climate policy communications.
+    Interfaces with data, simulation, and policy agents to produce executive summaries, policy briefs, and related outputs.
+    """
     def __init__(self, data_agent: DataAgent = None, simulation_agent: SimulationAgent = None, 
                  policy_agent: PolicyGeneratorAgent = None):
+        """
+        Initialize the CommunicationsAgent with optional data, simulation, and policy agents.
+        Args:
+            data_agent (DataAgent, optional): Data agent instance. Defaults to None.
+            simulation_agent (SimulationAgent, optional): Simulation agent instance. Defaults to None.
+            policy_agent (PolicyGeneratorAgent, optional): Policy agent instance. Defaults to None.
+        """
         self.data_agent = data_agent or DataAgent()
         self.simulation_agent = simulation_agent or SimulationAgent(data_agent)
         self.policy_agent = policy_agent or PolicyGeneratorAgent(data_agent, simulation_agent)
@@ -23,10 +34,21 @@ class CommunicationsAgent:
         self.llm_client = LLMClient()
         
     def initialize(self):
+        """
+        Initialize the data agent if its data cache is empty.
+        """
         if not self.data_agent.data_cache:
             self.data_agent.initialize()
     
     def generate_executive_summary(self, region: str, policy_recommendations: List[Dict] = None) -> Dict[str, Any]:
+        """
+        Generate an executive summary for a given region and policy recommendations.
+        Args:
+            region (str): The region for which to generate the summary.
+            policy_recommendations (List[Dict], optional): List of policy recommendations. Defaults to None.
+        Returns:
+            Dict[str, Any]: Executive summary dictionary or error message.
+        """
         self.initialize()
         
         logger.info(f"Generating executive summary for {region}")
@@ -60,6 +82,15 @@ class CommunicationsAgent:
         return summary
     
     def _describe_current_situation(self, region: str, current_emissions: float, current_gdp: float) -> Dict[str, str]:
+        """
+        Describe the current climate and economic situation for a region.
+        Args:
+            region (str): The region name.
+            current_emissions (float): Current CO2 emissions.
+            current_gdp (float): Current GDP.
+        Returns:
+            Dict[str, str]: Situation description.
+        """
         emissions_trend = self.data_agent.get_emissions_trend(region)
         energy_mix = self.data_agent.get_energy_mix_analysis(region)
         economic_indicators = self.data_agent.get_economic_indicators(region)
@@ -75,6 +106,13 @@ class CommunicationsAgent:
         return situation
     
     def _describe_policy_recommendation(self, policy: Dict) -> Dict[str, str]:
+        """
+        Describe the recommended policy package.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            Dict[str, str]: Policy description.
+        """
         policies = policy['policies']
         
         description = {
@@ -88,6 +126,14 @@ class CommunicationsAgent:
         return description
     
     def _describe_expected_impacts(self, policy: Dict, current_emissions: float) -> Dict[str, str]:
+        """
+        Describe the expected impacts of the recommended policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+            current_emissions (float): Current CO2 emissions.
+        Returns:
+            Dict[str, str]: Expected impacts description.
+        """
         impacts = {
             'emission_reduction': f"Expected to reduce emissions by {policy['emission_reduction_percent']:.1f}% ({policy['total_cost_millions_usd'] * policy['cost_effectiveness']:.1f} million tons of CO2). ",
             'economic_impact': self._describe_economic_impact(policy),
@@ -99,6 +145,13 @@ class CommunicationsAgent:
         return impacts
     
     def _describe_implementation_plan(self, policy: Dict) -> Dict[str, Any]:
+        """
+        Describe the implementation plan for the recommended policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            Dict[str, Any]: Implementation plan details.
+        """
         timeline = policy['implementation_timeline']
         
         plan = {
@@ -117,6 +170,13 @@ class CommunicationsAgent:
         return plan
     
     def _describe_risks(self, policy: Dict) -> Dict[str, str]:
+        """
+        Describe the risks associated with the recommended policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            Dict[str, str]: Risk assessment description.
+        """
         risks = policy['risk_assessment']
         
         risk_description = {
@@ -130,6 +190,13 @@ class CommunicationsAgent:
         return risk_description
     
     def _generate_next_steps(self, policy: Dict) -> List[str]:
+        """
+        Generate a list of next steps for policy implementation.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            List[str]: List of next steps.
+        """
         steps = [
             "Conduct detailed stakeholder consultation and public engagement",
             "Develop comprehensive implementation roadmap with milestones",
@@ -142,6 +209,14 @@ class CommunicationsAgent:
         return steps
     
     def _assess_urgency_level(self, emissions_trend: Dict, energy_mix: Dict) -> str:
+        """
+        Assess the urgency level for climate action based on emissions trend and energy mix.
+        Args:
+            emissions_trend (Dict): Emissions trend data.
+            energy_mix (Dict): Energy mix data.
+        Returns:
+            str: Urgency level description.
+        """
         if emissions_trend.get('trend_direction') == 'increasing' and energy_mix.get('renewable_share_percent', 0) < 20:
             return "High urgency - immediate action required to address rising emissions and low renewable energy adoption."
         elif emissions_trend.get('trend_direction') == 'increasing':
@@ -152,6 +227,13 @@ class CommunicationsAgent:
             return "Lower urgency - good progress on emissions and renewable energy, focus on optimization."
     
     def _list_key_policies(self, policies: List[Dict]) -> str:
+        """
+        List key policies in a policy package.
+        Args:
+            policies (List[Dict]): List of policy dictionaries.
+        Returns:
+            str: Comma-separated key policy descriptions.
+        """
         policy_descriptions = []
         
         for policy in policies:
@@ -171,6 +253,13 @@ class CommunicationsAgent:
         return ', '.join(policy_descriptions)
     
     def _describe_economic_impact(self, policy: Dict) -> str:
+        """
+        Describe the economic impact of a policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            str: Economic impact description.
+        """
         net_benefit = policy['net_benefit_millions_usd']
         total_cost = policy['total_cost_millions_usd']
         
@@ -180,6 +269,13 @@ class CommunicationsAgent:
             return f"Economic cost of ${abs(net_benefit):.1f} million, representing {abs(net_benefit)/total_cost*100:.1f}% of total investment cost. "
     
     def _describe_social_benefits(self, policy: Dict) -> str:
+        """
+        Describe the social benefits of a policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            str: Social benefits description.
+        """
         benefits = [
             "Improved public health through reduced air pollution",
             "Enhanced energy security and independence",
@@ -191,6 +287,13 @@ class CommunicationsAgent:
         return f"Social benefits include: {', '.join(benefits)}. "
     
     def _describe_environmental_benefits(self, policy: Dict) -> str:
+        """
+        Describe the environmental benefits of a policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            str: Environmental benefits description.
+        """
         emission_reduction = policy['emission_reduction_percent']
         
         benefits = [
@@ -204,6 +307,14 @@ class CommunicationsAgent:
         return f"Environmental benefits include: {', '.join(benefits)}. "
     
     def generate_policy_brief(self, region: str, policy_recommendations: List[Dict] = None) -> Dict[str, Any]:
+        """
+        Generate a detailed policy brief for a region and policy recommendations.
+        Args:
+            region (str): The region for which to generate the brief.
+            policy_recommendations (List[Dict], optional): List of policy recommendations. Defaults to None.
+        Returns:
+            Dict[str, Any]: Policy brief dictionary or error message.
+        """
         self.initialize()
         
         if not policy_recommendations:
@@ -224,6 +335,14 @@ class CommunicationsAgent:
         return brief
     
     def _generate_detailed_analysis(self, region: str, policy_recommendations: List[Dict]) -> Dict[str, Any]:
+        """
+        Generate a detailed analysis section for the policy brief.
+        Args:
+            region (str): The region name.
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            Dict[str, Any]: Detailed analysis dictionary.
+        """
         analysis = {
             'regional_context': self._analyze_regional_context(region),
             'policy_effectiveness': self._analyze_policy_effectiveness(policy_recommendations),
@@ -235,6 +354,13 @@ class CommunicationsAgent:
         return analysis
     
     def _analyze_regional_context(self, region: str) -> Dict[str, str]:
+        """
+        Analyze the regional context for climate policy.
+        Args:
+            region (str): The region name.
+        Returns:
+            Dict[str, str]: Regional context analysis.
+        """
         climate_data = self.data_agent.get_climate_data(region)
         economic_data = self.data_agent.get_economic_data(region)
         energy_data = self.data_agent.get_energy_data(region)
@@ -249,6 +375,13 @@ class CommunicationsAgent:
         return context
     
     def _analyze_policy_effectiveness(self, policy_recommendations: List[Dict]) -> Dict[str, Any]:
+        """
+        Analyze the effectiveness of policy recommendations.
+        Args:
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            Dict[str, Any]: Policy effectiveness analysis.
+        """
         effectiveness = {
             'emission_reduction_potential': f"Policy packages can achieve {policy_recommendations[0]['emission_reduction_percent']:.1f}% to {policy_recommendations[-1]['emission_reduction_percent']:.1f}% emission reductions. ",
             'cost_effectiveness_range': f"Cost-effectiveness ranges from {policy_recommendations[0]['cost_effectiveness']:.2f} to {policy_recommendations[-1]['cost_effectiveness']:.2f} tons CO2 per million dollars. ",
@@ -259,6 +392,13 @@ class CommunicationsAgent:
         return effectiveness
     
     def _analyze_economic_impacts(self, policy_recommendations: List[Dict]) -> Dict[str, str]:
+        """
+        Analyze the economic impacts of policy recommendations.
+        Args:
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            Dict[str, str]: Economic impact analysis.
+        """
         total_costs = [p['total_cost_millions_usd'] for p in policy_recommendations]
         net_benefits = [p['net_benefit_millions_usd'] for p in policy_recommendations]
         
@@ -272,6 +412,13 @@ class CommunicationsAgent:
         return analysis
     
     def _analyze_stakeholder_impacts(self, policy_recommendations: List[Dict]) -> Dict[str, str]:
+        """
+        Analyze the stakeholder impacts of policy recommendations.
+        Args:
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            Dict[str, str]: Stakeholder impact analysis.
+        """
         analysis = {
             'business_impact': "Businesses will face initial compliance costs but benefit from long-term energy savings and market opportunities in clean technologies. ",
             'consumer_impact': "Consumers may experience short-term cost increases but will benefit from improved air quality and long-term energy cost reductions. ",
@@ -282,6 +429,13 @@ class CommunicationsAgent:
         return analysis
     
     def _analyze_risk_mitigation(self, policy_recommendations: List[Dict]) -> Dict[str, str]:
+        """
+        Analyze risk mitigation strategies for policy recommendations.
+        Args:
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            Dict[str, str]: Risk mitigation analysis.
+        """
         analysis = {
             'political_risk_mitigation': "Engage stakeholders early, provide clear communication, and implement policies gradually to build public support. ",
             'economic_risk_mitigation': "Use phased implementation, provide transition support, and establish monitoring systems to track economic impacts. ",
@@ -292,6 +446,13 @@ class CommunicationsAgent:
         return analysis
     
     def _assess_policy_readiness(self, region: str) -> str:
+        """
+        Assess the policy readiness of a region.
+        Args:
+            region (str): The region name.
+        Returns:
+            str: Policy readiness description.
+        """
         policy_data = self.data_agent.get_policy_data(region)
         
         if policy_data.empty:
@@ -306,6 +467,13 @@ class CommunicationsAgent:
             return "Low policy readiness requiring significant capacity building and stakeholder engagement."
     
     def _generate_comparison_table(self, policy_recommendations: List[Dict]) -> List[Dict]:
+        """
+        Generate a comparison table for up to five policy recommendations.
+        Args:
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            List[Dict]: Comparison table rows.
+        """
         comparison = []
         
         for i, policy in enumerate(policy_recommendations[:5]):
@@ -322,6 +490,13 @@ class CommunicationsAgent:
         return comparison
     
     def _generate_implementation_roadmap(self, policy: Dict) -> Dict[str, Any]:
+        """
+        Generate an implementation roadmap for a policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            Dict[str, Any]: Implementation roadmap details.
+        """
         roadmap = {
             'overview': f"Implementation roadmap for achieving {policy['emission_reduction_percent']:.1f}% emission reduction over {policy['implementation_timeline']['total_duration_years']} years. ",
             'phases': policy['implementation_timeline']['phases'],
@@ -332,6 +507,13 @@ class CommunicationsAgent:
         return roadmap
     
     def _generate_key_milestones(self, policy: Dict) -> List[Dict]:
+        """
+        Generate key milestones for a policy's implementation timeline.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            List[Dict]: List of milestone dictionaries.
+        """
         timeline = policy['implementation_timeline']
         milestones = []
         
@@ -347,6 +529,13 @@ class CommunicationsAgent:
         return milestones
     
     def _generate_success_metrics(self, policy: Dict) -> List[Dict]:
+        """
+        Generate success metrics for a policy.
+        Args:
+            policy (Dict): Policy recommendation dictionary.
+        Returns:
+            List[Dict]: List of success metric dictionaries.
+        """
         metrics = [
             {
                 'metric': 'Emission Reduction',
@@ -373,6 +562,14 @@ class CommunicationsAgent:
         return metrics
     
     def _generate_appendices(self, region: str, policy_recommendations: List[Dict]) -> Dict[str, Any]:
+        """
+        Generate appendices for the policy brief.
+        Args:
+            region (str): The region name.
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            Dict[str, Any]: Appendices dictionary.
+        """
         appendices = {
             'technical_details': self._generate_technical_details(region, policy_recommendations),
             'data_sources': self._generate_data_sources(region),
@@ -383,6 +580,14 @@ class CommunicationsAgent:
         return appendices
     
     def _generate_technical_details(self, region: str, policy_recommendations: List[Dict]) -> Dict[str, Any]:
+        """
+        Generate technical details for the appendices.
+        Args:
+            region (str): The region name.
+            policy_recommendations (List[Dict]): List of policy recommendations.
+        Returns:
+            Dict[str, Any]: Technical details dictionary.
+        """
         details = {
             'simulation_parameters': self.simulation_agent.get_simulation_metadata(),
             'data_summary': self.data_agent.get_data_summary(),
@@ -393,6 +598,13 @@ class CommunicationsAgent:
         return details
     
     def _generate_data_sources(self, region: str) -> List[str]:
+        """
+        Generate a list of data sources for the appendices.
+        Args:
+            region (str): The region name.
+        Returns:
+            List[str]: List of data source descriptions.
+        """
         sources = [
             "Regional climate data from national environmental agencies",
             "Economic indicators from statistical bureaus",
@@ -404,6 +616,11 @@ class CommunicationsAgent:
         return sources
     
     def _generate_methodology(self) -> Dict[str, str]:
+        """
+        Generate methodology details for the appendices.
+        Returns:
+            Dict[str, str]: Methodology description.
+        """
         methodology = {
             'simulation_approach': "Integrated climate-economic modeling using baseline projections and policy impact analysis. ",
             'policy_evaluation': "Multi-criteria analysis considering effectiveness, cost, feasibility, and implementation timeline. ",
@@ -414,6 +631,11 @@ class CommunicationsAgent:
         return methodology
     
     def _generate_glossary(self) -> Dict[str, str]:
+        """
+        Generate a glossary for the appendices.
+        Returns:
+            Dict[str, str]: Glossary dictionary.
+        """
         glossary = {
             'CO2 emissions': "Carbon dioxide emissions, a primary greenhouse gas contributing to climate change",
             'Cost-effectiveness': "Measure of policy efficiency in terms of emission reduction per dollar invested",
@@ -425,6 +647,11 @@ class CommunicationsAgent:
         return glossary
     
     def export_communications(self, output_dir: str = "communications_output"):
+        """
+        Export all generated communications to the specified output directory as JSON files.
+        Args:
+            output_dir (str, optional): Output directory. Defaults to "communications_output".
+        """
         output_path = Path(output_dir)
         output_path.mkdir(exist_ok=True)
         
@@ -438,6 +665,11 @@ class CommunicationsAgent:
         logger.info(f"Communications exported to {output_path}")
     
     def get_communications_metadata(self) -> Dict[str, Any]:
+        """
+        Get metadata about all generated communications.
+        Returns:
+            Dict[str, Any]: Metadata dictionary.
+        """
         metadata = {
             'total_communications': len(self.communication_history),
             'regions_covered': list(set([c['region'] for c in self.communication_history])),
@@ -448,6 +680,14 @@ class CommunicationsAgent:
         return metadata
     
     def generate_llm_executive_summary(self, region: str, policy_recommendations: List[Dict] = None) -> Dict[str, str]:
+        """
+        Generate an executive summary using an LLM for a given region and policy recommendations.
+        Args:
+            region (str): The region for which to generate the summary.
+            policy_recommendations (List[Dict], optional): List of policy recommendations. Defaults to None.
+        Returns:
+            Dict[str, str]: LLM-generated executive summary or error message.
+        """
         if not policy_recommendations:
             policy_recommendations = self.policy_agent.generate_policy_recommendations(region)
         
@@ -491,6 +731,14 @@ class CommunicationsAgent:
             return "LLM analysis unavailable"
     
     def generate_llm_policy_brief(self, region: str, policy_recommendations: List[Dict] = None) -> Dict[str, str]:
+        """
+        Generate a policy brief using an LLM for a given region and policy recommendations.
+        Args:
+            region (str): The region for which to generate the policy brief.
+            policy_recommendations (List[Dict], optional): List of policy recommendations. Defaults to None.
+        Returns:
+            Dict[str, str]: LLM-generated policy brief or error message.
+        """
         if not policy_recommendations:
             policy_recommendations = self.policy_agent.generate_policy_recommendations(region)
         

@@ -3,9 +3,6 @@ import numpy as np
 from typing import Dict, List, Tuple, Optional, Any
 import logging
 from datetime import datetime, timedelta
-import requests
-from pathlib import Path
-import json
 
 from utils.data_loader import EcoPolicyDataLoader
 from utils.llm_client import LLMClient
@@ -14,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class DataAgent:
     def __init__(self, data_dir: str = "data"):
+        """Initialize the DataAgent with a data directory, data loader, and LLM client."""
         self.data_loader = EcoPolicyDataLoader(data_dir)
         self.data_cache = {}
         self.last_update = None
@@ -21,12 +19,14 @@ class DataAgent:
         self.llm_client = LLMClient()
         
     def initialize(self) -> Dict[str, Any]:
+        """Load all data into the cache and set the last update timestamp."""
         logger.info("Initializing Data Agent...")
         self.data_cache = self.data_loader.load_all_data()
         self.last_update = datetime.now()
         return self.data_cache
     
     def get_climate_data(self, region: str = None, start_year: int = None, end_year: int = None) -> pd.DataFrame:
+        """Retrieve climate data, optionally filtered by region and year range."""
         if not self.data_cache:
             self.initialize()
         
@@ -44,6 +44,7 @@ class DataAgent:
         return climate_df
     
     def get_energy_data(self, region: str = None, energy_source: str = None) -> pd.DataFrame:
+        """Retrieve energy data, optionally filtered by region and energy source."""
         if not self.data_cache:
             self.initialize()
         
@@ -58,6 +59,7 @@ class DataAgent:
         return energy_df
     
     def get_economic_data(self, region: str = None, metric: str = None) -> pd.DataFrame:
+        """Retrieve economic data, optionally filtered by region and metric."""
         if not self.data_cache:
             self.initialize()
         
@@ -73,6 +75,7 @@ class DataAgent:
         return economic_df
     
     def get_policy_data(self, region: str = None, policy_type: str = None) -> pd.DataFrame:
+        """Retrieve policy data, optionally filtered by region and policy type."""
         if not self.data_cache:
             self.initialize()
         
@@ -87,6 +90,7 @@ class DataAgent:
         return policy_df
     
     def get_emissions_trend(self, region: str, years: int = 10) -> Dict[str, Any]:
+        """Analyze CO2 emissions trend for a region over a specified number of years."""
         climate_df = self.get_climate_data(region)
         
         if climate_df.empty:
@@ -108,6 +112,7 @@ class DataAgent:
         return trend_analysis
     
     def get_energy_mix_analysis(self, region: str) -> Dict[str, Any]:
+        """Analyze the energy mix for a region, including renewable and fossil fuel shares."""
         energy_df = self.get_energy_data(region)
         
         if energy_df.empty:
@@ -130,6 +135,7 @@ class DataAgent:
         return energy_mix
     
     def get_economic_indicators(self, region: str) -> Dict[str, Any]:
+        """Retrieve key economic indicators for a region."""
         economic_df = self.get_economic_data(region)
         
         if economic_df.empty:
@@ -150,6 +156,7 @@ class DataAgent:
         return indicators
     
     def get_policy_effectiveness_data(self, region: str) -> pd.DataFrame:
+        """Aggregate and return policy effectiveness metrics for a region."""
         policy_df = self.get_policy_data(region)
         
         if policy_df.empty:
@@ -166,6 +173,7 @@ class DataAgent:
         return effectiveness_metrics
     
     def get_regional_comparison(self, regions: List[str], metric: str = 'co2_emissions_mt') -> pd.DataFrame:
+        """Compare a specified metric across multiple regions."""
         comparison_data = []
         
         for region in regions:
@@ -195,6 +203,7 @@ class DataAgent:
         return pd.DataFrame(comparison_data)
     
     def get_forecast_data(self, region: str, scenario: str = 'business_as_usual', years: int = 20) -> pd.DataFrame:
+        """Generate emissions forecast data for a region under a given scenario for a number of years."""
         if not self.data_cache:
             self.initialize()
         
@@ -217,6 +226,7 @@ class DataAgent:
         return pd.DataFrame(forecast_data)
     
     def refresh_data(self) -> bool:
+        """Refresh the data cache by reloading all data. Returns True if successful, False otherwise."""
         try:
             logger.info("Refreshing data cache...")
             self.data_cache = self.data_loader.load_all_data()
@@ -227,6 +237,7 @@ class DataAgent:
             return False
     
     def get_data_summary(self) -> Dict[str, Any]:
+        """Return a summary of the loaded data, including sources, regions, and years covered."""
         if not self.data_cache:
             self.initialize()
         
@@ -250,6 +261,7 @@ class DataAgent:
         return summary
     
     def get_llm_data_insights(self, region: str) -> str:
+        """Use an LLM to generate insights about a region's climate and economic data."""
         climate_data = self.get_climate_data(region)
         economic_data = self.get_economic_data(region)
         energy_data = self.get_energy_data(region)
@@ -282,6 +294,7 @@ class DataAgent:
             return "LLM analysis unavailable"
     
     def get_llm_trend_analysis(self, region: str, metric: str = "emissions") -> str:
+        """Use an LLM to analyze the trend of a specified metric (emissions or GDP) for a region."""
         if metric == "emissions":
             data = self.get_climate_data(region)
             current_value = data['co2_emissions_mt'].iloc[-1]
@@ -310,4 +323,5 @@ class DataAgent:
             return "LLM analysis unavailable"
     
     def get_regional_summary(self, region: str = None) -> pd.DataFrame:
+        """Return a summary DataFrame for a region using the data loader's summary method."""
         return self.data_loader.get_regional_summary(region)
