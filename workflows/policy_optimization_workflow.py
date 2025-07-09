@@ -25,7 +25,7 @@ class PolicyState(TypedDict, total=False):
 def data_node(state: PolicyState, data_agent: DataAgent):
     data_agent.initialize()
     llm_insights = data_agent.get_llm_data_insights(state["region"])
-    state["llm_insights"] = llm_insights
+    state["llm_insights"] = {"data_insights": llm_insights}
     return state
 
 def policy_node(state: PolicyState, policy_agent: PolicyGeneratorAgent):

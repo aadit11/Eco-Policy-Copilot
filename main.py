@@ -69,24 +69,22 @@ def main():
 
     output_dir = SETTINGS['communications_agent']['output_dir']
     Path(output_dir).mkdir(exist_ok=True)
-    if final_state.final_output:
+    if final_state.get("final_output"):
         print("\n=== Policy Brief ===")
         import json
-        print(json.dumps(final_state.final_output, indent=2, default=str))
-        # Save to file
+        print(json.dumps(final_state["final_output"], indent=2, default=str))
         out_file = Path(output_dir) / f"policy_brief_{region.replace(' ', '_').lower()}.json"
         with open(out_file, 'w') as f:
-            json.dump(final_state.final_output, f, indent=2, default=str)
+            json.dump(final_state["final_output"], f, indent=2, default=str)
         print(f"\nPolicy brief saved to {out_file}")
 
         comms_agent = CommunicationsAgent()
-        summary = comms_agent.generate_executive_summary(region, policy_recommendations=final_state.final_output.get('policies'))
+        summary = comms_agent.generate_executive_summary(region, policy_recommendations=final_state["final_output"].get('policies'))
         print("\n=== Executive Summary ===")
         print(summary)
-        # Save executive summary to file as plain text
         summary_file = Path(output_dir) / f"executive_summary_{region.replace(' ', '_').lower()}.txt"
         with open(summary_file, 'w', encoding='utf-8') as f:
-            f.write(summary)
+            f.write(json.dumps(summary, indent=2, default=str))
         print(f"\nExecutive summary saved to {summary_file}")
     else:
         print("No final output generated.")

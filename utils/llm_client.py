@@ -20,9 +20,4 @@ class LLMClient:
             payload["stop"] = stop
         response = requests.post(self.endpoint, json=payload, timeout=self.timeout)
         response.raise_for_status()
-        result = response.json()
-        if "response" in result:
-            return result["response"]
-        elif "choices" in result and result["choices"]:
-            return result["choices"][0]["text"]
-        return result 
+        return response.text 
