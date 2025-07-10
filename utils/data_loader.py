@@ -1,8 +1,7 @@
 import pandas as pd
 import json
-import numpy as np
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, Any
 import logging
 from utils.data_preprocessing import DataPreprocessor
 
@@ -11,14 +10,28 @@ logger = logging.getLogger(__name__)
 
 
 class EcoPolicyDataLoader:
+    """
+    Loads, preprocesses, and manages eco-policy related datasets including climate, economic, energy, policy, social impact, and technology cost data.
+    Provides methods for data aggregation, policy recommendations, emissions forecasting, and exporting processed data.
+    """
 
     def __init__(self, data_dir: str = "data"):
+        """
+        Initialize the data loader with a directory containing data files.
+        Args:
+            data_dir (str): Path to the data directory.
+        """
         self.data_dir = Path(data_dir)
         self.data_cache = {}
         self.simulation_params = None
         self.preprocessor = DataPreprocessor()
         
     def load_all_data(self) -> Dict[str, Any]:
+        """
+        Load all relevant data files and cache them.
+        Returns:
+            Dict[str, Any]: Dictionary containing all loaded datasets.
+        """
         logger.info("Loading all data files...")
         
         data = {
@@ -37,11 +50,23 @@ class EcoPolicyDataLoader:
         return data
     
     def _preprocess_df(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Apply missing value imputation and feature engineering to a DataFrame.
+        Args:
+            df (pd.DataFrame): Input DataFrame.
+        Returns:
+            pd.DataFrame: Preprocessed DataFrame.
+        """
         df = self.preprocessor.fill_missing(df)
         df = self.preprocessor.feature_engineering(df)
         return df
     
     def load_climate_data(self) -> pd.DataFrame:
+        """
+        Load and preprocess climate data from CSV.
+        Returns:
+            pd.DataFrame: Climate data with engineered features.
+        """
         file_path = self.data_dir / "climate_data.csv"
         try:
             df = pd.read_csv(file_path)
@@ -60,6 +85,11 @@ class EcoPolicyDataLoader:
             return pd.DataFrame()
     
     def load_economic_data(self) -> pd.DataFrame:
+        """
+        Load and preprocess economic data from CSV.
+        Returns:
+            pd.DataFrame: Economic data with engineered features.
+        """
         file_path = self.data_dir / "economic_data.csv"
         try:
             df = pd.read_csv(file_path)
@@ -77,6 +107,11 @@ class EcoPolicyDataLoader:
             return pd.DataFrame()
     
     def load_energy_data(self) -> pd.DataFrame:
+        """
+        Load and preprocess energy data from CSV.
+        Returns:
+            pd.DataFrame: Energy data with engineered features.
+        """
         file_path = self.data_dir / "energy_data.csv"
         try:
             df = pd.read_csv(file_path)
@@ -95,6 +130,11 @@ class EcoPolicyDataLoader:
             return pd.DataFrame()
     
     def load_policy_data(self) -> pd.DataFrame:
+        """
+        Load and preprocess policy data from CSV.
+        Returns:
+            pd.DataFrame: Policy data with engineered features.
+        """
         file_path = self.data_dir / "policy_database.csv"
         try:
             df = pd.read_csv(file_path)
@@ -113,6 +153,11 @@ class EcoPolicyDataLoader:
             return pd.DataFrame()
     
     def load_social_impact_data(self) -> pd.DataFrame:
+        """
+        Load and preprocess social impact data from CSV.
+        Returns:
+            pd.DataFrame: Social impact data with engineered features.
+        """
         file_path = self.data_dir / "social_impact_data.csv"
         try:
             df = pd.read_csv(file_path)
@@ -130,6 +175,11 @@ class EcoPolicyDataLoader:
             return pd.DataFrame()
     
     def load_technology_cost_data(self) -> pd.DataFrame:
+        """
+        Load and preprocess technology cost data from CSV.
+        Returns:
+            pd.DataFrame: Technology cost data with engineered features.
+        """
         file_path = self.data_dir / "technology_cost_data.csv"
         try:
             df = pd.read_csv(file_path)
@@ -148,6 +198,11 @@ class EcoPolicyDataLoader:
             return pd.DataFrame()
     
     def load_simulation_parameters(self) -> Dict[str, Any]:
+        """
+        Load simulation parameters from a JSON file.
+        Returns:
+            Dict[str, Any]: Simulation parameters.
+        """
         file_path = self.data_dir / "simulation_parameters.json"
         try:
             with open(file_path, 'r') as f:
@@ -161,6 +216,13 @@ class EcoPolicyDataLoader:
             return {}
     
     def get_regional_summary(self, region: str = None) -> pd.DataFrame:
+        """
+        Aggregate and summarize climate and economic data for a given region.
+        Args:
+            region (str, optional): Region to filter by. If None, summarizes all regions.
+        Returns:
+            pd.DataFrame: Regional summary statistics.
+        """
         if not self.data_cache:
             self.load_all_data()
         
@@ -182,6 +244,14 @@ class EcoPolicyDataLoader:
         return summary
     
     def get_policy_recommendations(self, region: str, budget_constraint: float = None) -> pd.DataFrame:
+        """
+        Generate policy recommendations for a region, optionally filtered by budget constraint.
+        Args:
+            region (str): Region to generate recommendations for.
+            budget_constraint (float, optional): Maximum allowed implementation cost.
+        Returns:
+            pd.DataFrame: Sorted policy recommendations with composite scores.
+        """
         if not self.data_cache:
             self.load_all_data()
         
@@ -206,6 +276,14 @@ class EcoPolicyDataLoader:
                                'composite_score']]
     
     def get_emissions_forecast(self, region: str, scenario: str = 'business_as_usual') -> pd.DataFrame:
+        """
+        Generate an emissions forecast for a region under a given scenario.
+        Args:
+            region (str): Region to forecast emissions for.
+            scenario (str): Scenario key from simulation parameters.
+        Returns:
+            pd.DataFrame: Emissions forecast by year.
+        """
         if not self.simulation_params:
             self.load_simulation_parameters()
         
@@ -233,7 +311,11 @@ class EcoPolicyDataLoader:
         return pd.DataFrame(emissions_forecast)
     
     def export_processed_data(self, output_dir: str = "processed_data"):
-        
+        """
+        Export all cached processed data to CSV or JSON files in the specified output directory.
+        Args:
+            output_dir (str): Directory to save processed data files.
+        """
         if not self.data_cache:
             self.load_all_data()
         

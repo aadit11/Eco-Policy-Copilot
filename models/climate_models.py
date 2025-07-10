@@ -4,18 +4,41 @@ from typing import Dict, List, Tuple, Optional, Any
 import logging
 from datetime import datetime, timedelta
 
-logger = logging.getLogger(__name__)
+
 
 class ClimateModel:
+    """
+    A model for simulating climate-related projections such as emissions, temperature rise, and climate impacts.
+    """
     def __init__(self):
+        """
+        Initialize the ClimateModel with empty parameters and no historical data.
+        """
         self.model_params = {}
         self.historical_data = None
         
     def fit(self, data: pd.DataFrame):
+        """
+        Fit the model using historical climate data.
+        Args:
+            data (pd.DataFrame): Historical climate data.
+        Returns:
+            self: The fitted model instance.
+        """
         self.historical_data = data
         return self
         
     def predict_emissions(self, years: int = 20, scenario: str = "business_as_usual") -> pd.DataFrame:
+        """
+        Predict future CO2 emissions for a given number of years and scenario.
+        Args:
+            years (int): Number of years to predict into the future.
+            scenario (str): Emissions scenario ('business_as_usual', 'moderate_reduction', 'aggressive_reduction').
+        Returns:
+            pd.DataFrame: DataFrame containing year, emissions, and scenario.
+        Raises:
+            ValueError: If the model has not been fitted with historical data.
+        """
         if self.historical_data is None:
             raise ValueError("Model must be fitted before prediction")
             
@@ -46,6 +69,13 @@ class ClimateModel:
         return pd.DataFrame(predictions)
     
     def predict_temperature(self, emissions_data: pd.DataFrame) -> pd.DataFrame:
+        """
+        Predict global temperature rise based on emissions data.
+        Args:
+            emissions_data (pd.DataFrame): DataFrame with yearly emissions.
+        Returns:
+            pd.DataFrame: DataFrame with year, predicted temperature, and temperature rise.
+        """
         base_temp = 14.0
         temp_sensitivity = 0.006
         
@@ -62,6 +92,13 @@ class ClimateModel:
         return pd.DataFrame(temperature_data)
     
     def assess_climate_impacts(self, temperature_data: pd.DataFrame) -> Dict[str, Any]:
+        """
+        Assess climate impacts based on temperature rise data.
+        Args:
+            temperature_data (pd.DataFrame): DataFrame with temperature rise information.
+        Returns:
+            Dict[str, Any]: Dictionary of estimated climate impacts.
+        """
         max_temp_rise = temperature_data['temperature_rise_c'].max()
         
         impacts = {
@@ -75,18 +112,47 @@ class ClimateModel:
         return impacts
 
 class EmissionForecastModel:
+    """
+    A model for forecasting regional emissions and calculating emission budgets.
+    """
     def __init__(self):
+        """
+        Initialize the EmissionForecastModel with empty parameters and sector weights.
+        """
         self.regional_params = {}
         self.sector_weights = {}
         
     def set_regional_params(self, region: str, params: Dict[str, float]):
+        """
+        Set parameters for a specific region.
+        Args:
+            region (str): Region name.
+            params (Dict[str, float]): Parameters for the region.
+        """
         self.regional_params[region] = params
         
     def set_sector_weights(self, weights: Dict[str, float]):
+        """
+        Set weights for different economic sectors.
+        Args:
+            weights (Dict[str, float]): Sector weights.
+        """
         self.sector_weights = weights
         
     def forecast_regional_emissions(self, region: str, base_year: int, target_year: int, 
                                   policy_impacts: Dict[str, float] = None) -> pd.DataFrame:
+        """
+        Forecast emissions for a region from base_year to target_year, optionally applying policy impacts.
+        Args:
+            region (str): Region name.
+            base_year (int): Starting year for the forecast.
+            target_year (int): Ending year for the forecast.
+            policy_impacts (Dict[str, float], optional): Policy impacts by type.
+        Returns:
+            pd.DataFrame: DataFrame with yearly emissions and cumulative emissions.
+        Raises:
+            ValueError: If no parameters are set for the region.
+        """
         if region not in self.regional_params:
             raise ValueError(f"No parameters set for region: {region}")
             
@@ -116,6 +182,16 @@ class EmissionForecastModel:
     
     def calculate_emission_budget(self, region: str, target_reduction: float, 
                                 base_year: int, target_year: int) -> Dict[str, float]:
+        """
+        Calculate the emission budget for a region given a target reduction.
+        Args:
+            region (str): Region name.
+            target_reduction (float): Target reduction percentage.
+            base_year (int): Starting year.
+            target_year (int): Ending year.
+        Returns:
+            Dict[str, float]: Emission budget and required reduction information.
+        """
         params = self.regional_params[region]
         base_emissions = params.get('base_emissions', 100)
         
@@ -130,13 +206,33 @@ class EmissionForecastModel:
         }
 
 class ClimateImpactModel:
+    """
+    A model for calculating climate-related impacts and adaptation costs.
+    """
     def __init__(self):
+        """
+        Initialize the ClimateImpactModel with an empty dictionary of impact functions.
+        """
         self.impact_functions = {}
         
     def add_impact_function(self, impact_type: str, function):
+        """
+        Add a custom impact function for a specific impact type.
+        Args:
+            impact_type (str): The type of impact (e.g., 'health', 'economic').
+            function (callable): Function to calculate the impact.
+        """
         self.impact_functions[impact_type] = function
         
     def calculate_impacts(self, emissions_data: pd.DataFrame, region: str) -> Dict[str, Any]:
+        """
+        Calculate impacts for a region using the registered impact functions.
+        Args:
+            emissions_data (pd.DataFrame): DataFrame with emissions data.
+            region (str): Region name.
+        Returns:
+            Dict[str, Any]: Calculated impacts for the region.
+        """
         impacts = {}
         
         total_emissions = emissions_data['emissions_mt'].sum()
@@ -154,6 +250,14 @@ class ClimateImpactModel:
         return impacts
     
     def estimate_adaptation_costs(self, temperature_rise: float, region: str) -> Dict[str, float]:
+        """
+        Estimate adaptation costs for a region based on temperature rise.
+        Args:
+            temperature_rise (float): Projected temperature rise in degrees Celsius.
+            region (str): Region name.
+        Returns:
+            Dict[str, float]: Estimated adaptation costs by sector (in millions).
+        """
         base_costs = {
             'infrastructure': 50,
             'agriculture': 30,
@@ -164,5 +268,5 @@ class ClimateImpactModel:
         adaptation_costs = {}
         for sector, base_cost in base_costs.items():
             adaptation_costs[f'{sector}_cost_millions'] = base_cost * temperature_rise
-            
+        
         return adaptation_costs
