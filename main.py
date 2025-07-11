@@ -8,6 +8,15 @@ from workflows.policy_optimization_workflow import build_policy_optimization_gra
 from agents.communications_agent import CommunicationsAgent
 
 def get_available_regions(data_path):
+    """
+    Returns a sorted list of unique regions available in the climate data CSV file located at the given data_path.
+
+    Args:
+        data_path (str or Path): Path to the directory containing 'climate_data.csv'.
+
+    Returns:
+        list: Sorted list of unique region names found in the climate data file. Returns an empty list if the file is not found.
+    """
     climate_file = Path(data_path) / "climate_data.csv"
     if not climate_file.exists():
         print(f"Could not find {climate_file}")
@@ -16,6 +25,11 @@ def get_available_regions(data_path):
     return sorted(df['region'].unique())
 
 def main():
+    """
+    Main entry point for the Eco-Policy-Copilot policy optimization workflow.
+    Parses command-line arguments, loads configuration, prompts for missing inputs,
+    runs the policy optimization workflow, and outputs results including a policy brief and executive summary.
+    """
     parser = argparse.ArgumentParser(description="Eco-Policy-Copilot: Policy Optimization Workflow")
     parser.add_argument('--region', type=str, help='Region to analyze (e.g., "North America")')
     parser.add_argument('--target', type=float, help='Target emission reduction percent (default from config)')

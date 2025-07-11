@@ -23,12 +23,31 @@ class PolicyState(TypedDict, total=False):
 
 
 def data_node(state: PolicyState, data_agent: DataAgent):
+    """Initializes data agent and retrieves LLM data insights for the specified region.
+
+    Args:
+        state (PolicyState): The current workflow state.
+        data_agent (DataAgent): The data agent instance.
+
+    Returns:
+        PolicyState: Updated state with LLM data insights.
+    """
     data_agent.initialize()
     llm_insights = data_agent.get_llm_data_insights(state["region"])
     state["llm_insights"] = {"data_insights": llm_insights}
     return state
 
+
 def policy_node(state: PolicyState, policy_agent: PolicyGeneratorAgent):
+    """Generates policy recommendations and LLM insights for the given region and target.
+
+    Args:
+        state (PolicyState): The current workflow state.
+        policy_agent (PolicyGeneratorAgent): The policy agent instance.
+
+    Returns:
+        PolicyState: Updated state with policy recommendations and LLM insights.
+    """
     llm_policy_recs = policy_agent.get_llm_policy_recommendations(
         state["region"], 
         state["target_emission_reduction"]
@@ -60,6 +79,15 @@ def policy_node(state: PolicyState, policy_agent: PolicyGeneratorAgent):
     return state
 
 def simulation_node(state: PolicyState, simulation_agent: SimulationAgent):
+    """Runs a policy simulation and updates the state with results and LLM analysis.
+
+    Args:
+        state (PolicyState): The current workflow state.
+        simulation_agent (SimulationAgent): The simulation agent instance.
+
+    Returns:
+        PolicyState: Updated state with simulation results and LLM analysis.
+    """
     if state.get("best_policy"):
         simulation_result = simulation_agent.run_policy_simulation(state["region"], state["best_policy"]["policies"])
         state["simulation_result"] = simulation_result
@@ -74,6 +102,14 @@ def simulation_node(state: PolicyState, simulation_agent: SimulationAgent):
     return state
 
 def convergence_node(state: PolicyState):
+    """Checks for convergence based on emission reduction and iteration count.
+
+    Args:
+        state (PolicyState): The current workflow state.
+
+    Returns:
+        PolicyState: Updated state with convergence status.
+    """
     if not state.get("best_policy"):
         state["converged"] = True
         return state
@@ -90,6 +126,15 @@ def convergence_node(state: PolicyState):
     return state
 
 def communications_node(state: PolicyState, communications_agent: CommunicationsAgent):
+    """Generates policy brief and LLM-enhanced outputs for the best policy.
+
+    Args:
+        state (PolicyState): The current workflow state.
+        communications_agent (CommunicationsAgent): The communications agent instance.
+
+    Returns:
+        PolicyState: Updated state with final outputs and LLM insights.
+    """
     if state.get("best_policy"):
         state["final_output"] = communications_agent.generate_policy_brief(state["region"], [state["best_policy"]])
         
@@ -116,6 +161,17 @@ def communications_node(state: PolicyState, communications_agent: Communications
     return state
 
 def build_policy_optimization_graph(region, target_emission_reduction=30, budget_constraint=None, max_iterations=5):
+    """Builds and compiles the policy optimization workflow graph for a given region.
+
+    Args:
+        region (str): The region for policy optimization.
+        target_emission_reduction (float, optional): Target emission reduction percentage. Defaults to 30.
+        budget_constraint (float, optional): Budget constraint for policies. Defaults to None.
+        max_iterations (int, optional): Maximum number of optimization iterations. Defaults to 5.
+
+    Returns:
+        tuple: (workflow, initial_state) where workflow is the compiled graph and initial_state is the initial PolicyState.
+    """
     data_agent = DataAgent()
     simulation_agent = SimulationAgent(data_agent)
     policy_agent = PolicyGeneratorAgent(data_agent, simulation_agent)
