@@ -1,14 +1,25 @@
 import pandas as pd
-import numpy as np
-from typing import List, Dict, Any
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, OneHotEncoder
+from typing import List
 
 class DataPreprocessor:
+    """
+    Provides methods for preprocessing data, including filling missing values and feature engineering.
+    """
     def __init__(self):
-        self.scalers = {}
-        self.encoders = {}
+        pass
 
     def fill_missing(self, df: pd.DataFrame, strategy: str = "mean", columns: List[str] = None) -> pd.DataFrame:
+        """
+        Fill missing values in the specified columns of a DataFrame using the given strategy.
+
+        Args:
+            df (pd.DataFrame): The input DataFrame.
+            strategy (str): The strategy to use for filling missing values. Options are 'mean', 'median', 'mode', or 'zero'.
+            columns (List[str], optional): List of columns to fill. If None, all columns are used.
+
+        Returns:
+            pd.DataFrame: DataFrame with missing values filled.
+        """
         if columns is None:
             columns = df.columns.tolist()
         for col in columns:
@@ -23,25 +34,16 @@ class DataPreprocessor:
                     df[col] = df[col].fillna(0)
         return df
 
-    def scale_features(self, df: pd.DataFrame, columns: List[str], method: str = "standard") -> pd.DataFrame:
-        if method == "standard":
-            scaler = StandardScaler()
-        else:
-            scaler = MinMaxScaler()
-        df[columns] = scaler.fit_transform(df[columns])
-        self.scalers[method] = scaler
-        return df
-
-    def encode_categorical(self, df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
-        encoder = OneHotEncoder(sparse=False, handle_unknown="ignore")
-        encoded = encoder.fit_transform(df[columns])
-        encoded_df = pd.DataFrame(encoded, columns=encoder.get_feature_names_out(columns), index=df.index)
-        df = df.drop(columns=columns)
-        df = pd.concat([df, encoded_df], axis=1)
-        self.encoders["onehot"] = encoder
-        return df
-
     def feature_engineering(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Add engineered features to the DataFrame, such as emissions per capita and GDP per capita, if relevant columns exist.
+
+        Args:
+            df (pd.DataFrame): The input DataFrame.
+
+        Returns:
+            pd.DataFrame: DataFrame with new engineered features added.
+        """
         if "co2_emissions_mt" in df.columns and "population_millions" in df.columns:
             df["emissions_per_capita"] = df["co2_emissions_mt"] / (df["population_millions"] * 1e6)
         if "gdp_billions_usd" in df.columns and "population_millions" in df.columns:
