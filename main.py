@@ -88,18 +88,38 @@ def main():
         import json
         print(json.dumps(final_state["final_output"], indent=2, default=str))
         out_file = Path(output_dir) / f"policy_brief_{region.replace(' ', '_').lower()}.json"
-        with open(out_file, 'w') as f:
-            json.dump(final_state["final_output"], f, indent=2, default=str)
+        with open(out_file, 'w', encoding='utf-8') as f:
+            json.dump(final_state["final_output"], f, indent=2, ensure_ascii=False)
         print(f"\nPolicy brief saved to {out_file}")
 
-        comms_agent = CommunicationsAgent()
-        summary = comms_agent.generate_executive_summary(region, policy_recommendations=final_state["final_output"].get('policies'))
-        print("\n=== Executive Summary ===")
-        print(summary)
-        summary_file = Path(output_dir) / f"executive_summary_{region.replace(' ', '_').lower()}.txt"
-        with open(summary_file, 'w', encoding='utf-8') as f:
-            f.write(json.dumps(summary, indent=2, default=str))
-        print(f"\nExecutive summary saved to {summary_file}")
+        exec_summary = None
+        llm_outputs = None
+        if "llm_enhanced_outputs" in final_state["final_output"]:
+            llm_outputs = final_state["final_output"]["llm_enhanced_outputs"]
+            exec_summary = llm_outputs.get("executive_summary")
+        if exec_summary or llm_outputs:
+            print("\n=== Executive Summary & LLM Enhanced Outputs ===")
+            md_file = Path(output_dir) / f"executive_summary_{region.replace(' ', '_').lower()}.md"
+            with open(md_file, 'w', encoding='utf-8') as f:
+                if exec_summary:
+                    f.write(f"# Executive Summary\n\n{exec_summary}\n\n")
+                if llm_outputs:
+                    for key, value in llm_outputs.items():
+                        if key == "executive_summary":
+                            continue  # Already written above
+                        # Use a Markdown header for each section
+                        section_title = key.replace('_', ' ').title()
+                        f.write(f"## {section_title}\n\n{value}\n\n")
+            print(f"\nExecutive summary and LLM outputs saved to {md_file}")
+        else:
+            print("No executive summary or LLM enhanced outputs found in the output.")
+
+        policy_brief_text = final_state["final_output"].get("policy_brief")
+        if policy_brief_text:
+            print("\n=== Policy Brief (Text) ===")
+            print(policy_brief_text)
+        else:
+            print("No policy brief text found in the output.")
     else:
         print("No final output generated.")
 

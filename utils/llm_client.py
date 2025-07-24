@@ -1,6 +1,6 @@
 import requests
 from config.settings import SETTINGS
-
+import json
 class LLMClient:
     """
     Client for interacting with a language model (LLM) API endpoint.
@@ -35,4 +35,13 @@ class LLMClient:
         }
         response = requests.post(self.endpoint, json=payload, timeout=self.timeout)
         response.raise_for_status()
-        return response.text 
+        lines = response.text.strip().splitlines()
+        text_chunks = []
+        for line in lines:
+            try:
+                obj = json.loads(line)
+                if "response" in obj:
+                    text_chunks.append(obj["response"])
+            except Exception:
+                continue
+        return "".join(text_chunks).strip() 

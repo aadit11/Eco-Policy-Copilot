@@ -44,3 +44,9 @@ P042,Feed-in Tariffs,Subsidy,Asia Pacific,1100,200,140,3.5,0.2,22000,2,72,6,6,7
 P043,Smart Grid Implementation,Infrastructure,Asia Pacific,3300,550,90,2.3,0.3,28000,5,68,7,6,6
 P044,Green Hydrogen Development,Technical,Asia Pacific,4400,660,120,3.0,0.4,33000,6,62,6,5,5
 P045,Carbon Capture and Storage,Technical,Asia Pacific,2800,450,180,4.5,0.2,22000,4,58,5,4,6 
+P201,Advanced Grid Modernization,Technical,North America,3500,600,110,3.0,0.3,27000,4,68,6,7,8
+P202,Just Transition Fund,Economic,Europe,1200,250,60,1.7,0.4,15000,3,82,9,8,9
+P203,State Renewable Mandates,Regulatory,North America,900,180,130,3.5,0.2,21000,2,74,7,8,8
+P204,Green Industrial Policy,Regulatory,Europe,2000,400,90,2.6,0.3,18000,3,80,8,8,8
+P205,Climate Resilience Bonds,Financial,North America,800,120,50,1.2,0.1,9000,2,70,8,7,7
+P206,Urban Mobility Package,Infrastructure,Europe,1500,300,70,2.0,0.2,12000,3,77,8,8,8 

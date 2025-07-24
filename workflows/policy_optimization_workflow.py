@@ -136,7 +136,8 @@ def communications_node(state: PolicyState, communications_agent: Communications
         PolicyState: Updated state with final outputs and LLM insights.
     """
     if state.get("best_policy"):
-        state["final_output"] = communications_agent.generate_policy_brief(state["region"], [state["best_policy"]])
+        policy_brief = communications_agent.generate_policy_brief(state["region"], [state["best_policy"]])
+        state["final_output"] = {"policy_brief": policy_brief}
         
         llm_summary = communications_agent.generate_llm_executive_summary(
             state["region"], 
